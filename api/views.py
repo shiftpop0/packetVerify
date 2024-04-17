@@ -7,7 +7,7 @@ from api.models import *
 
 
 def index(request):
-    response = HttpResponse("Hello, world. You're at the polls index.")
+    response = HttpResponse("Hello, world. You're at the index.")
     return response
 
 def verifyIDList(request):

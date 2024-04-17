@@ -14,7 +14,7 @@ class UnifiedResponseMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        if not request.path.startswith('/api/'):
+        if not any([request.path.startswith('/api/'), request.path.startswith('/controller/')]):
             return self.get_response(request)
         # 如果响应已经是一个JsonResponse，则不进行处理
         # if isinstance(response, JsonResponse):
@@ -31,5 +31,5 @@ class UnifiedResponseMiddleware:
         new_response.status_code = response.status_code
         for header, value in response.items():
             new_response[header] = value
-        print(unified_response.get('data'))
+        # print(unified_response.get('data'))
         return new_response
