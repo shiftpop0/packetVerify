@@ -20,9 +20,11 @@ def RIB(request):
         if response.get(r.deviceId.id) is None:
             response[r.deviceId.id] = []
         response[r.deviceId.id].append({
+            'srcIP': r.srcIP,
             'dstIP': r.dstIP,
             'nextHop': r.nextHop,
-            'interfaceId': r.interfaceId
+            'inInterfaceId': r.inInterfaceId,
+            'outInterfaceId': r.outInterfaceId,
         })
     return JsonResponse(response)
 
@@ -35,10 +37,22 @@ def FIB(request):
                 response[f.deviceId.id] = []
             response[f.deviceId.id].append({
                 'dstIP': f.dstIP,
-                'interfaceId': f.interfaceId
+                'outInterfaceId': f.outInterfaceId
             })
     except Exception as e:
         print("error!!!",str(e))
         return HttpResponse(type(e).__name__+" "+str(e),status=500)
+    return JsonResponse(response)
+
+def verifyTable(request):
+    verify = verifyTable.objects.all()
+    response = {}
+    for v in verify:
+        if response.get(v.deviceId.id) is None:
+            response[v.deviceId.id] = []
+        response[v.deviceId.id].append({
+            'srcIP': v.srcIP,
+            'inInterfaceId': v.interfaceId
+        })
     return JsonResponse(response)
 

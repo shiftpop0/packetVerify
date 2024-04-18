@@ -8,5 +8,6 @@ urlpatterns = [
     path("registe", registe),
     path("rib", RIB),
     path("fib", FIB),
+    path("verifyTable", verifyTable),
 
 ]
