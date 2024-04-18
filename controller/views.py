@@ -7,6 +7,9 @@ def index(request):
     response = HttpResponse("Hello, world. You're at the index.")
     return response
 
+def genTopo(request):
+    return HttpResponse("genTopo success")
+
 def registe(request):
     return HttpResponse("registe success")
 
@@ -38,3 +41,4 @@ def FIB(request):
         print("error!!!",str(e))
         return HttpResponse(type(e).__name__+" "+str(e),status=500)
     return JsonResponse(response)
+
