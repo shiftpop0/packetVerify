@@ -2,31 +2,35 @@
 
 生成拓扑接口：http://127.0.0.1:8000/controller/genTopo
 ```
- {
+{
     "code": 200,
     "order": null,
     "data": {
         "10.0.8.0/24": [
             {
                 "next_hop": "10.0.4.0/24",
+                "dstIP": "10.0.4.0/24",
                 "interface": "In:1 Out:2"
             }
         ],
         "10.0.4.0/24": [
             {
                 "next_hop": "10.0.3.0/24",
+                "dstIP": "10.0.3.0/24",
                 "interface": "In:2 Out:1"
             }
         ],
         "10.0.3.0/24": [
             {
                 "next_hop": "10.0.1.0/24",
+                "dstIP": "10.0.1.0/24",
                 "interface": "In:1 Out:2"
             }
         ],
         "10.0.1.0/24": [
             {
                 "next_hop": "10.0.9.0/24",
+                "dstIP": "10.0.9.0/24",
                 "interface": "In:1 Out:2"
             }
         ]

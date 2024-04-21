@@ -16,7 +16,7 @@ class FIB_Model(models.Model):
     dstIP = models.CharField(max_length=17)
     outInterfaceId = models.CharField(max_length=15)
 
-class verifyTable(models.Model):
+class verifyTable_Model(models.Model):
     id = models.AutoField(primary_key=True)
     deviceId = models.ForeignKey('api.deviceModel', on_delete=models.CASCADE)
     srcIP = models.CharField(max_length=17)

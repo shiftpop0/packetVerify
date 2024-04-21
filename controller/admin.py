@@ -3,4 +3,4 @@ from controller.models import *
 
 admin.site.register(RIB_Model)
 admin.site.register(FIB_Model)
-admin.site.register(verifyTable)
+admin.site.register(verifyTable_Model)

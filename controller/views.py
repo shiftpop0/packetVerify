@@ -2,29 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from controller.models import *
 from controller.tests import *
+from api.models import *
+
 def index(request):
     response = HttpResponse("Hello, world. You're at the index.")
     return response
 
-#TODO 将拓扑信息存入数据库
-def genTopo(request):
-    topoInfo = analyze_routing_topology()
-    try:
-        response = {}
-        for src, next_hop, interface in topoInfo:
-            if response.get(src) is None:
-                response[src] = []
-            response[src].append({
-                'next_hop': next_hop,
-                'interface': interface
-            })
-        return JsonResponse(response)
-    except Exception as e:
-        print("error!!!",str(e))
-        return HttpResponse(type(e).__name__+" "+str(e),status=500)
-
 def registe(request):
     return HttpResponse("registe success")
+
 
 def RIB(request):
     rib = RIB_Model.objects.all()
@@ -41,15 +27,38 @@ def RIB(request):
         })
     return JsonResponse(response)
 
-#TODO 存入数据库
+def genTopo(request):
+    topoInfo = analyze_routing_topology()
+    try:
+        response = {}
+        for srcIP, dstIP, next_hop, interface in topoInfo:
+            if response.get(srcIP) is None:
+                response[srcIP] = []
+            response[srcIP].append({
+                'next_hop': next_hop,
+                'dstIP': dstIP,  #用于转发表，建立拓扑可以不用用到这个字段
+                'interface': interface
+            })
+        return JsonResponse(response)
+    except Exception as e:
+        print("error!!!",str(e))
+        return HttpResponse(type(e).__name__+" "+str(e),status=500)
+
 def FIB(request):
     fib = analyze_fib()
     try:
         response = {}
-        for node, entries in fib.items():
+        for i, (node, entries)in enumerate(fib.items()):
             if response.get(node) is None:
                 response[node] = []
+            device = deviceModel.objects.get(id= i + 1)
             for entry in entries:
+                # 存入数据库操作，注意这里是更新覆盖的
+                FIB_Model.objects.update_or_create(
+                    deviceId_id=device.id,
+                    dstIP=entry['dstIP'],
+                    outInterfaceId=entry['outInterfaceId']
+                )
                 response[node].append({
                     'dstIP': entry['dstIP'],
                     'outInterfaceId': entry['outInterfaceId']
@@ -58,30 +67,22 @@ def FIB(request):
     except Exception as e:
         return HttpResponse(f"Internal Server Error: {str(e)}", status=500)
 
-    # fib = FIB_Model.objects.all()
-    # response = {}
-    # try:
-    #     for f in fib:
-    #         if response.get(f.deviceId.id) is None:
-    #             response[f.deviceId.id] = []
-    #         response[f.deviceId.id].append({
-    #             'dstIP': f.dstIP,
-    #             'outInterfaceId': f.outInterfaceId
-    #         })
-    # except Exception as e:
-    #     print("error!!!",str(e))
-    #     return HttpResponse(type(e).__name__+" "+str(e),status=500)
-    # return JsonResponse(response)
-
-#TODO 存入数据库
 def verifyTable(request):
     vt = analyze_vt()
     try:
         response = {}
-        for node, entries in vt.items():
+        #enumerate(vt.items())
+        for i, (node, entries) in enumerate(vt.items()):
             if response.get(node) is None:
                 response[node] = []
+            device = deviceModel.objects.get(id = i+1)
             for entry in entries:
+                #存入数据库操作，注意这里是更新覆盖的
+                verifyTable_Model.objects.update_or_create(
+                    deviceId_id=device.id,
+                    srcIP=entry['srcIP'],
+                    inInterfaceId=entry['inInterfaceId']
+                )
                 response[node].append({
                     'srcIP': entry['srcIP'],
                     'inInterfaceId': entry['inInterfaceId']
@@ -89,14 +90,4 @@ def verifyTable(request):
         return JsonResponse(response)
     except Exception as e:
         return HttpResponse(f"Internal Server Error: {str(e)}", status=500)
-    # verify = verifyTable.objects.all()
-    # response = {}
-    # for v in verify:
-    #     if response.get(v.deviceId.id) is None:
-    #         response[v.deviceId.id] = []
-    #     response[v.deviceId.id].append({
-    #         'srcIP': v.srcIP,
-    #         'inInterfaceId': v.interfaceId
-    #     })
-    # return JsonResponse(response)
 

@@ -30,22 +30,23 @@ def analyze_routing_topology():
         for route in entry:
             if all(is_valid_ip(route[field]) for field in ['srcIP', 'nextHop', 'dstIP']):
                 interface = f"In:{route['inInterfaceId']} Out:{route['outInterfaceId']}"
-                connections.append((route['srcIP'], route['nextHop'], interface))
+                #connections.append((route['srcIP'], route['nextHop'], interface))
+                connections.append((route['srcIP'], route['dstIP'], route['nextHop'], interface))
+                print(connections)
             else:
                 print(f"Invalid IP format found and skipped: {route}")
 
     # 建立连接关系
     G = nx.DiGraph()
-    for src, next_hop, interface in connections:
-        G.add_edge(src, next_hop, label=interface)
+    for srcIP,  dstIP, next_hop, interface in connections:
+        G.add_edge(srcIP, next_hop, label=interface) #用下一跳去建立连接关系
 
     pos = nx.spring_layout(G)
     nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=2000, font_size=10)
     edge_labels = nx.get_edge_attributes(G, 'label')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
     # plt.show()
-    #
-    # print(f"Connections: {connections}")
+
     return connections
 
 #根据拓扑信息随机选择相邻的三个节点，
@@ -75,7 +76,7 @@ def analyze_fib():
 
     for node in selected_nodes:
         entries = data[node]
-        fib[node] = [{'dstIP': entry['next_hop'].split('/')[0] +  '/' + entry['next_hop'].split('/')[1],
+        fib[node] = [{'dstIP': entry['dstIP'].split('/')[0] +  '/' + entry['dstIP'].split('/')[1],
                       'outInterfaceId': entry['interface'].split('Out:')[1]} for entry in entries]
     return fib
 
