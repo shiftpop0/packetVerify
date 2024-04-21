@@ -59,8 +59,11 @@ def fetch_and_select_nodes():
         node_keys = list(data.keys())
         if len(node_keys) < 3:
             return "Not enough nodes to select three adjacent.", None
-        random_start = random.randint(0, len(node_keys) - 3)
-        selected_nodes = node_keys[random_start:random_start + 3]
+        # 随机选择三个相邻节点
+        # random_start = random.randint(0, len(node_keys) - 3)
+        # selected_nodes = node_keys[random_start:random_start + 3]
+        # 改成头三个节点，确保每次选择的节点一样
+        selected_nodes = node_keys[:3]
         return data, selected_nodes
     except requests.RequestException as e:
         return f"Request Fail: {str(e)}", None
