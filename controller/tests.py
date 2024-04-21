@@ -19,7 +19,7 @@ def analyze_routing_topology():
     url = 'http://127.0.0.1:8000/controller/rib'
     try:
         response = requests.get(url)
-        response.raise_for_status()  # 检查响应是否成功
+        response.raise_for_status()  # 检查响应
         data = response.json()['data']
     except requests.RequestException as e:
         return f"Request Fail: {e}"
@@ -55,7 +55,7 @@ def fetch_and_select_nodes():
     url = 'http://127.0.0.1:8000/controller/genTopo'
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Checks if the HTTP request was successful
+        response.raise_for_status()
         data = response.json()['data']
         node_keys = list(data.keys())
         if len(node_keys) < 3:
