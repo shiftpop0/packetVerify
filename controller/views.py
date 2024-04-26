@@ -91,3 +91,36 @@ def verifyTable(request):
     except Exception as e:
         return HttpResponse(f"Internal Server Error: {str(e)}", status=500)
 
+
+# 拓扑链路信息
+def topoLink(request):
+    link_performance = analyze_link_performance()
+    try:
+        response = {}
+        for (srcIP, dstIP, next_hop, interface), performance in link_performance.items():
+            if srcIP not in response:
+                response[srcIP] = []
+            response[srcIP].append({
+                'srcIP': srcIP,
+                'next_hop': next_hop,
+                'link_performance': performance
+            })
+        return JsonResponse(response)
+    except Exception as e:
+        print("error!!!", str(e))
+        return HttpResponse(f"{type(e).__name__} {str(e)}", status=500)
+
+
+def topoNode(request):
+    node_performance = analyze_node_performance()
+    try:
+        response = {}
+        for node, performance in node_performance.items():
+            response[node] = {
+                'node': node,
+                'node_performance': performance
+            }
+        return JsonResponse(response)
+    except Exception as e:
+        print("error!!!", str(e))
+        return HttpResponse(f"{type(e).__name__} {str(e)}", status=500)

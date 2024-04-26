@@ -32,7 +32,6 @@ def analyze_routing_topology():
                 interface = f"In:{route['inInterfaceId']} Out:{route['outInterfaceId']}"
                 #connections.append((route['srcIP'], route['nextHop'], interface))
                 connections.append((route['srcIP'], route['dstIP'], route['nextHop'], interface))
-                print(connections)
             else:
                 print(f"Invalid IP format found and skipped: {route}")
 
@@ -89,3 +88,32 @@ def analyze_vt():
         vt[node] = [{'srcIP': node.split('/')[0] +  '/' + node.split('/')[1],
                      'inInterfaceId': entry['interface'].split('In:')[1].split(' ')[0]} for entry in entries]
     return vt
+
+#动态模拟每条链路的时延、丢包率、带宽
+def analyze_link_performance():
+    connections = analyze_routing_topology()
+    link_performance = {}
+    for connection in connections:
+        delay = random.randint(1, 100)  # 延迟
+        packet_loss = random.uniform(0, 0.05)  # 丢包
+        bandwidth = random.randint(10, 1000)  # 带宽
+        link_performance[connection] = {'延时': f"{delay}ms", '丢包率': f"{packet_loss * 100:.2f}%",
+                                        '带宽': f"{bandwidth}Mbps"}
+    return link_performance
+
+#动态模拟各个节点的CPU利用率、内存利用率、温度
+def analyze_node_performance():
+    _, selected_nodes = fetch_and_select_nodes()  # Assume this function returns nodes
+    node_performance = {}
+    for node in selected_nodes:
+        cpu_utilization = random.uniform(0, 1)
+        memory_utilization = random.uniform(0, 1)
+        temperature = random.randint(20, 90)
+        node_performance[node] = {'cpu': f"{cpu_utilization * 100:.2f}%",
+                                  '内存': f"{memory_utilization * 100:.2f}%",
+                                  '温度': f"{temperature}°C"}
+    return node_performance
+
+if __name__ == '__main__':
+   performance = analyze_node_performance()
+   print(performance)
