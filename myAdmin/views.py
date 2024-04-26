@@ -1,3 +1,4 @@
+import requests
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 import json
@@ -11,3 +12,7 @@ def login(request):
 
 def admin_index(request):
     return render(request, 'admin_index.html')
+
+def device_manage(request):
+    return render(request, 'device_manage.html')
+

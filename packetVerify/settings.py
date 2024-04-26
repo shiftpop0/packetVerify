@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "api",
     "myAdmin",
     "controller",
+    "devices",
 ]
 
 MIDDLEWARE = [
@@ -56,21 +57,22 @@ MIDDLEWARE = [
 ROOT_URLCONF = "packetVerify.urls"
 
 TEMPLATES = [
-    {
-        "BACKEND": 'django.template.backends.jinja2.Jinja2'
-        ,
-        "DIRS": [BASE_DIR / 'templates']
-        ,
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
+    # {
+    #     "BACKEND": 'django.template.backends.jinja2.Jinja2'
+    #     ,
+    #     "DIRS": [BASE_DIR / 'packetVerify/jinja2_env.py']
+    #     ,
+    #     "APP_DIRS": True,
+    #     "OPTIONS": {
+    #         'environment': "packetVerify.jinja2_env.environment",
+    #         "context_processors": [
+    #             "django.template.context_processors.debug",
+    #             "django.template.context_processors.request",
+    #             "django.contrib.auth.context_processors.auth",
+    #             "django.contrib.messages.context_processors.messages",
+    #         ],
+    #     },
+    # },
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / 'templates']

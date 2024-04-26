@@ -32,7 +32,7 @@ class UnifiedResponseMiddleware:
                 new_response[header] = value
             return new_response
 
-        if request.path.startswith('/controller'):
+        if any([request.path.startswith('/controller'), request.path.startswith('/devices')]):
             unified_response = {
                 'code': response.status_code,
                 "order": json.loads(request.body).get('order') if is_json(request.body) else None,

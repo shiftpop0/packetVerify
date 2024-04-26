@@ -2,6 +2,7 @@
 <!-- Topbar header - style you can find in pages.scss -->
 <!-- ============================================================== -->
 {%  load static %}
+
 <nav class="navbar navbar-default navbar-static-top m-b-0">
     <div class="navbar-header">
         <div class="top-left-part">
@@ -98,7 +99,7 @@
             //发送请求
             $.ajax({
                 type : "POST",
-                url : "/report/checkMyMotification.action",
+                {#url : "/report/checkMyMotification.action",#}
                 dataType : "json",
                 contentType: "application/json",
                 data : JSON.stringify({

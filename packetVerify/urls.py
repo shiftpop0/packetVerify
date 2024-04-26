@@ -24,5 +24,6 @@ urlpatterns = [
     path("api/",include(("api.urls","api"),namespace="api")),
     path("controller/",include(("controller.urls","api"),namespace="controller")),
     path("",include(("myAdmin.urls","myAdmin"),namespace="myAdmin")),
+    path("devices/",include(("devices.urls","devices"),namespace="devices")),
     path("admin/", admin.site.urls),
 ]
