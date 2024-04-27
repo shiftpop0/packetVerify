@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络拓扑图</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        #app {
+            margin: 20px;
+        }
+        #network {
+            width: 100%;
+            height: 80vh;
+            border: 1px solid gray;
+        }
+
+        .el-dialog__body {
+            text-align: left;
+        }
+        .el-button--primary {
+            margin-bottom: 20px;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+        .el-button--primary:hover {
+            background-color: #409EFF;
+            box-shadow: 0 4px 14px 0 rgba(0,0,0,0.1), 0 2px 4px 0 rgba(0,0,0,0.06);
+            transform: translateY(-2px);
+        }
+        .el-button--primary:active {
+            transform: translateY(-1px);
+        }
+    </style>
+
+</head>
+<body>
+    <div id="app">
+        <el-button :loading="isLoading" @click="fetchTopology" type="primary">加载拓扑</el-button>
+        <div id="network"></div>
+        <el-alert v-if="errorMessage" :title="errorMessage" type="error" show-icon></el-alert>
+    </div>
+
+    <script>
+        const { createApp, ref, onUnmounted } = Vue;
+        const { ElButton, ElAlert } = ElementPlus;
+
+        createApp({
+            setup() {
+                const network = ref(null);
+                const isLoading = ref(false);
+                const errorMessage = ref('');
+                const intervalId = ref(null);
+                const dashOffset = ref(0);
+
+                const fetchTopology = () => {
+                    isLoading.value = true;
+                    errorMessage.value = '';
+                    axios.get('http://127.0.0.1:8000/controller/genTopo')
+                        .then(response => {
+                            processData(response.data.data);
+                            isLoading.value = false;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching topology:', error);
+                            errorMessage.value = '加载拓扑数据失败！请检查控制台了解详细信息。';
+                            isLoading.value = false;
+                        });
+                };
+
+                const processData = (data) => {
+                    const nodes = [];
+                    const edges = [];
+                    const nodeMap = new Map();
+
+                    let id = 0;
+
+                    Object.keys(data).forEach(network => {
+                        if (!nodeMap.has(network)) {
+                            nodes.push({
+                                id: id,
+                                label: network,
+                                shape: 'image',
+                                image: '/static/plugins/images/router.png',
+                                size: 30,
+                                font: {
+                                    color: '#4B4B4B',
+                                    face: 'Arial',
+                                    vadjust: -22
+                                },
+                                color: {
+                                    background: '#97C2FC',
+                                    border: '#2B7CE9',
+                                    highlight: {
+                                        background: '#D2E5FF',
+                                        border: '#2B7CE9'
+                                    }
+                                }
+                            });
+                            nodeMap.set(network, id);
+                            id++;
+                        }
+
+                        data[network].forEach(link => {
+                            if (!nodeMap.has(link.next_hop)) {
+                                nodes.push({
+                                    id: id,
+                                    label: link.next_hop,
+                                    shape: 'image',
+                                    image: '/static/plugins/images/router.png',
+                                    size: 30,
+                                    font: {
+                                        color: '#4B4B4B',
+                                        face: 'Arial',
+                                        vadjust: -22
+                                    },
+                                    color: {
+                                        background: '#97C2FC',
+                                        border: '#2B7CE9',
+                                        highlight: {
+                                            background: '#D2E5FF',
+                                            border: '#2B7CE9'
+                                        }
+                                    }
+                                });
+                                nodeMap.set(link.next_hop, id);
+                                id++;
+                            }
+                            edges.push({
+                                from: nodeMap.get(network),
+                                to: nodeMap.get(link.next_hop),
+                                label: link.interface,
+                                font: { align: 'top' },
+                                color: '#848484',
+                                arrows: {
+                                    to: { enabled: false, scaleFactor: 1.2 }  //设置成false，不显示箭头
+                                },
+                                dashes: [5, 5, 0, 0]
+                            });
+                        });
+                    });
+
+                    initNetwork(nodes, edges);
+                };
+
+                const initNetwork = (nodes, edges) => {
+                    const container = document.getElementById('network');
+                    const data = {
+                        nodes: new vis.DataSet(nodes),
+                        edges: new vis.DataSet(edges)
+                    };
+                    const options = {
+                        layout: {
+                            hierarchical: {
+                                enabled: false // 禁用分层布局
+                            }
+                        },
+                        physics: {
+                            enabled: true,
+                            barnesHut: {
+                                gravitationalConstant: -30000,
+                                centralGravity: 0.3,
+                                springLength: 95,
+                                springConstant: 0.04,
+                                damping: 0.09,
+                                avoidOverlap: 0.1
+                            }
+                        },
+                        nodes: {
+                            borderWidth: 2,
+                            size: 30,
+                            color: {
+                                border: '#406897',
+                                background: '#6AAFFF'
+                            },
+                            font: { color: '#eeeeee' }
+                        },
+                        edges: {
+                            width: 2,
+                            length: 200,
+                            color: 'lightgray',
+                            arrows: {
+                                to: { enabled: true, scaleFactor: 1.2 }
+                            },
+                            smooth: {
+                                type: 'cubicBezier',
+                                forceDirection: 'vertical',
+                                roundness: 0.4
+                            }
+                        }
+                    };
+
+                    if (network.value) {
+                        network.value.destroy();
+                    }
+                    network.value = new vis.Network(container, data, options);
+                    startEdgeAnimation();
+                };
+
+                const startEdgeAnimation = () => {
+                    const updateEdges = () => {
+                        dashOffset.value = (dashOffset.value + 0.03) % 10; // 可以根据需要调整这个值
+                        const updatedEdges = network.value.body.data.edges.get({
+                            returnType: 'Object'
+                        });
+                        for (const edgeId in updatedEdges) {
+                            const edge = updatedEdges[edgeId];
+                            network.value.body.data.edges.update({
+                                id: edgeId,
+                                dashes: [5, 5, 0,  dashOffset.value] // 使用平衡的虚线和间隙配置
+                            });
+                        }
+                    };
+
+                    intervalId.value = setInterval(updateEdges,50); // 保持更新间隔为50毫秒
+                };
+
+                onUnmounted(() => {
+                    if (intervalId.value) {
+                        clearInterval(intervalId.value);
+                    }
+                });
+
+                return { fetchTopology, isLoading, errorMessage };
+            },
+            components: {
+                ElButton,
+                ElAlert
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
