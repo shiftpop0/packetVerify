@@ -7,6 +7,5 @@ urlpatterns = [
     path("login",login),
     path("admin_index",admin_index),
     path("device_manage", device_manage),
-
-
+    path("topo", topo),
 ]

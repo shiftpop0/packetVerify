@@ -16,3 +16,6 @@ def admin_index(request):
 def device_manage(request):
     return render(request, 'device_manage.html')
 
+def topo(request):
+    return render(request, 'topo.html')
+

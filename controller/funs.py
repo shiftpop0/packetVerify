@@ -101,9 +101,9 @@ def analyze_link_performance():
                                         '带宽': f"{bandwidth}Mbps"}
     return link_performance
 
-#动态模拟各个节点的CPU利用率、内存利用率、温度
+#动态模拟所有节点的CPU利用率、内存利用率、温度
 def analyze_node_performance():
-    _, selected_nodes = fetch_and_select_nodes()  # Assume this function returns nodes
+    _, selected_nodes = fetch_and_select_nodes()
     node_performance = {}
     for node in selected_nodes:
         cpu_utilization = random.uniform(0, 1)
@@ -113,7 +113,3 @@ def analyze_node_performance():
                                   '内存': f"{memory_utilization * 100:.2f}%",
                                   '温度': f"{temperature}°C"}
     return node_performance
-
-if __name__ == '__main__':
-   performance = analyze_node_performance()
-   print(performance)
