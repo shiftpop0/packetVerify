@@ -566,7 +566,7 @@
     }
 
     //imparam=this
-    function deletelab(inparam) {
+    function verifyset(inparam) {
 
 
         swal({
@@ -652,7 +652,7 @@
     }
 
     //加载实验室老师
-    function tloadTeachers(inparam){
+    function loadDevice(inparam){
         //inparam sample：laba_0
 
         var toloadid = $(inparam).attr("id")
@@ -683,11 +683,11 @@
         //发送请求
         $.ajax({
             type: "POST",
-            url: "/lab/getthislabteacher.action",
+            url: "/devices/getPort",
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify({
-                id:idindatabase
+                {#deviceId:idindatabase#}
             })
         }).always(function () {
             //隐藏加载中遮罩
@@ -695,10 +695,10 @@
 
         }).done(function (response) {
 
-            if (undefined === response.code) {
+            if (response.code === 200) {
 
-                if(undefined ===externallabresponse.data[arrayindex].teachers)
-                    externallabresponse.data[arrayindex].newParam ='teachers';
+                {#if(undefined ===externallabresponse.data[arrayindex].teachers)#}
+                {#    externallabresponse.data[arrayindex].newParam ='teachers';#}
 
                 externallabresponse.data[arrayindex].teachers = response
 
@@ -706,7 +706,7 @@
 
                 if (response.data == null || response.data.length == 0) {
                     $("#"+divnameid).append(
-                        "没有老师"
+                        "没有端口"
                     )
                     return
                 }
@@ -715,20 +715,20 @@
 
 
 
-                for (var i = 0; i < response.data.length; i++) {
+                for (var i = 0; i < Object.keys(response.data.devicePort).length; i++) {
 
                     var maleimg = $("<img>").addClass("img-circle img-responsive").attr("src", "avatar/male.png")
                     var femaleimg = $("<img>").addClass("img-circle img-responsive").attr("src", "avatar/female.png")
 
                     var imgnode = maleimg;
 
-                    if (response.data[i].sex == "女")
-                        imgnode = femaleimg
+                    {#if (response.data[i].sex == "女")#}
+                    {#    imgnode = femaleimg#}
 
                     var issupernode = null;
-
-                    if(response.data[i].isSupervisor == 1)
-                        issupernode = $("<span>").addClass("label label-info m-l-5").append("责任老师")
+                    console.log(response.data.devicePort[i])
+                    {#if(response.data[i].isSupervisor == 1)#}
+                    {#    issupernode = $("<span>").addClass("label label-info m-l-5").append("责任老师")#}
 
                     $("#"+divnameid).append(
 /*                    <div class="col-md-6 col-sm-6">
@@ -760,39 +760,40 @@
                     </div>
                     </a>
                     </div>*/
-                        $("<div>").addClass("col-md-4 col-sm-4").append(
+                        $("<div>").addClass("col-md-3 col-sm-3").append(
                             $("<a>").attr("id", arrayindex+"_"+i).attr("href", "javascript:void(0)").attr("onClick", "renderteacher(this)").append(
                                 $("<div>").addClass("white-box").append(
                                     $("<div>").addClass("row").append(
-                                        $("<div>").addClass("col-md-4 col-sm-4 text-center").append(
-                                            imgnode
-                                        )
+                                        {#$("<div>").addClass("col-md-4 col-sm-4 text-center").append(#}
+                                        {#    imgnode#}
+                                        {#)#}
                                     ).append(
                                         $("<div>").addClass("col-md-8 col-sm-8").append(
                                             $("<h3>").addClass("box-title m-b-0").append(
-                                                response.data[i].name
-                                            ).append(
-                                                issupernode
+                                                "端口："+i
+                                            )
+                                            {#    .append(#}
+                                            {#    issupernode#}
+                                            {#)#}
+                                        ).append(
+                                            $("<p>").append(
+                                                "ipAddress：" + response.data.devicePort[i].ipAddress
                                             )
                                         ).append(
                                             $("<p>").append(
-                                                "简介：" + response.data[i].about
+                                                "mask：" + response.data.devicePort[i].mask
                                             )
                                         ).append(
                                             $("<p>").append(
-                                                "性别：" + response.data[i].sex
+                                                "speed：" + response.data.devicePort[i].arriveSpeed
                                             )
                                         ).append(
                                             $("<p>").append(
-                                                "手机：" + response.data[i].telephone
+                                                "rx：" + response.data.devicePort[i].rx
                                             )
                                         ).append(
                                             $("<p>").append(
-                                                "邮箱：" + response.data[i].mail
-                                            )
-                                        ).append(
-                                            $("<p>").append(
-                                                "工号：" + response.data[i].username
+                                                "tx：" + response.data.devicePort[i].tx
                                             )
                                         )
                                     )
@@ -805,7 +806,7 @@
 
             } else {
                 swal({
-                    title: "获取老师失败",
+                    title: "获取端口信息失败",
                     text: response.message,
                     type: "error",
                     timer: 1000,
@@ -858,7 +859,7 @@
                 //发送请求
                 $.ajax({
                     type: "POST",
-                    url: "/teacher/deleteTeacher.action",
+                    url: "/port/deleteTeacher.action",
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify({
@@ -928,7 +929,7 @@
             //发送请求
             $.ajax({
                 type: "POST",
-                url: "/teacher/updateTeacher.action",
+                url: "/port/updateTeacher.action",
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify({
@@ -999,7 +1000,7 @@
             //发送请求
             $.ajax({
                 type: "POST",
-                url: "/teacher/addTeacher.action",
+                url: "/port/addTeacher.action",
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify({
@@ -1185,7 +1186,7 @@
                                 )
                             ).append(
                                 $("<li>").addClass("").attr("role","presentation").append(
-                                    $("<a>").attr("id","laba_"+i).attr("onClick","loadTeachers(this)").attr("href","#teacher"+i).attr("aria-controls","teacher"+i).attr("role","tab").attr("data-toggle","tab").attr("aria-expanded","false").append(
+                                    $("<a>").attr("id","laba_"+i).attr("onClick","loadDevice(this)").attr("href","#port"+i).attr("aria-controls","port"+i).attr("role","tab").attr("data-toggle","tab").attr("aria-expanded","false").append(
                                         $("<span>").addClass("visible-xs").append(
                                             $("<i>").addClass("ti-user")
                                         )
@@ -1237,13 +1238,13 @@
                                     $("<div>").addClass("clearfix")
                                 )
                             ).append(
-                                $("<div>").addClass("tab-pane").attr("role","tabpanel").attr("id","teacher"+i).append(
-                                    $("<button>").addClass("btn btn-info waves-effect waves-light m-b-20").attr("id","new_teacher_"+i).attr("type","button").attr("onClick","addteachertolab(this)").append(
+                                $("<div>").addClass("tab-pane").attr("role","tabpanel").attr("id","port"+i).append(
+                                    $("<button>").addClass("btn btn-info waves-effect waves-light m-b-20").attr("id","port"+i).attr("type","button").attr("onClick","loadDevice(this)").append(
                                         $("<span>").addClass("btn-label").append(
                                             $("<i>").addClass("fa fa-plus")
                                         )
                                     ).append(
-                                        "新增老师"
+                                        "刷新"
                                     )
                                 ).append(
                                     $("<div>").addClass("col-md-12").attr("id","toinsertteacher_"+i)
@@ -1259,15 +1260,15 @@
                                                 $("<i>").addClass("fa fa-edit")
                                             )
                                         ).append(
-                                            "编辑实验室"
+                                            "编辑表大小"
                                         )
                                     ).append(
-                                        $("<button>").addClass("btn btn-danger waves-effect waves-light").attr("id","delete_lab_"+i).attr("type","button").attr("onClick","deletelab(this)").append(
+                                        $("<button>").addClass("btn btn-danger waves-effect waves-light").attr("id","verify_set_"+i).attr("type","button").attr("onClick","verifyset(this)").append(
                                             $("<span>").addClass("btn-label").append(
-                                                $("<i>").addClass("fa fa-trash-o")
+                                                $("<i>").addClass("fa fa-exchange")
                                             )
                                         ).append(
-                                            "删除实验室"
+                                            "切换验证开关"
                                         )
                                     )
                                 ).append(
