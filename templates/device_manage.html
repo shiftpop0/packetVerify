@@ -485,6 +485,8 @@
 <script>
 
     var externallabresponse;
+    var verify_mode=false;
+
 
     //点击老师之后显示的模态框，用来更新和删除
     function renderteacher(inparam) {
@@ -568,14 +570,14 @@
     //imparam=this
     function verifyset(inparam) {
 
-
+        console.log(verify_mode);
         swal({
-            title: "确定删除实验室吗?",
-            text: "删除后一切数据无法恢复!",
+            title: "确定切换验证状态吗?",
+            text: `当前验证开关状态：`+(verify_mode === true ? "开" : "关"),
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "删除",
+            confirmButtonText: (verify_mode === true ? "关闭" : "开启"),
             cancelButtonText:"取消",
             closeOnConfirm: false
         }, function(){
@@ -594,15 +596,16 @@
             var maskid = "divwrapper_"+arrayindex;
 
             $("#"+maskid).busyLoad("show", {
-                text: "删除中 ...",
+                text: "切换中 ...",
                 animation: "fade",
                 background: "rgba(0, 0, 0, 0.86)",
                 spinner: "cube-grid"
             });
             //发送请求
+
             $.ajax({
                 type: "POST",
-                url: "/lab/deleteLab.action",
+                url: "/devices/verifySet",
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify({
@@ -614,18 +617,22 @@
 
             }).done(function (response) {
 
-                if (undefined === response.code) {
+                if (response.code === 200) {
                     swal({
-                        title: "删除成功",
+                        title: "切换成功",
                         text: response.message,
                         type: "success",
                         timer: 1000,
                     })
+                    verify_mode = response.data;
+                    {#var contentContainer = swal.getContent();#}
+                    {#contentContainer.querySelector('.sweet-alert-text').textContent = `当前验证开关状态：` + (verify_mode === true ? "关" : "开");#}
+
                     location.reload()
 
                 }else {
                     swal({
-                        title: "删除失败",
+                        title: "切换失败",
                         text: response.message,
                         type: "error",
                         timer: 1000,
@@ -1161,6 +1168,9 @@
                 }
 
                 for (var i = 0; i < response.data.length; i++) {
+                    if (i===0){
+                        verify_mode = response.data[i].deviceInfo.verifyMode
+                    }
 
                     $("#rowtoinsertlab").append(
 

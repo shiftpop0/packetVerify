@@ -1,0 +1,654 @@
+Index: controller/views.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.shortcuts import render\r\nfrom django.http import HttpResponse, JsonResponse\r\nfrom controller.models import *\r\n\r\n\r\ndef index(request):\r\n    response = HttpResponse(\"Hello, world. You're at the index.\")\r\n    return response\r\n\r\ndef genTopo(request):\r\n    return HttpResponse(\"genTopo success\")\r\n\r\ndef registe(request):\r\n    return HttpResponse(\"registe success\")\r\n\r\ndef RIB(request):\r\n    rib = RIB_Model.objects.all()\r\n    response = {}\r\n    for r in rib:\r\n        if response.get(r.deviceId.id) is None:\r\n            response[r.deviceId.id] = []\r\n        response[r.deviceId.id].append({\r\n            'srcIP': r.srcIP,\r\n            'dstIP': r.dstIP,\r\n            'nextHop': r.nextHop,\r\n            'inInterfaceId': r.inInterfaceId,\r\n            'outInterfaceId': r.outInterfaceId,\r\n        })\r\n    return JsonResponse(response)\r\n\r\ndef FIB(request):\r\n    fib = FIB_Model.objects.all()\r\n    response = {}\r\n    try:\r\n        for f in fib:\r\n            if response.get(f.deviceId.id) is None:\r\n                response[f.deviceId.id] = []\r\n            response[f.deviceId.id].append({\r\n                'dstIP': f.dstIP,\r\n                'outInterfaceId': f.outInterfaceId\r\n            })\r\n    except Exception as e:\r\n        print(\"error!!!\",str(e))\r\n        return HttpResponse(type(e).__name__+\" \"+str(e),status=500)\r\n    return JsonResponse(response)\r\n\r\ndef verifyTable(request):\r\n    verify = verifyTable.objects.all()\r\n    response = {}\r\n    for v in verify:\r\n        if response.get(v.deviceId.id) is None:\r\n            response[v.deviceId.id] = []\r\n        response[v.deviceId.id].append({\r\n            'srcIP': v.srcIP,\r\n            'inInterfaceId': v.interfaceId\r\n        })\r\n    return JsonResponse(response)\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/controller/views.py b/controller/views.py
+--- a/controller/views.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ b/controller/views.py	(date 1713689710351)
+@@ -1,18 +1,17 @@
+ from django.shortcuts import render
+ from django.http import HttpResponse, JsonResponse
+ from controller.models import *
+-
++from controller.tests import *
++from api.models import *
+ 
+ def index(request):
+     response = HttpResponse("Hello, world. You're at the index.")
+     return response
+ 
+-def genTopo(request):
+-    return HttpResponse("genTopo success")
+-
+ def registe(request):
+     return HttpResponse("registe success")
+ 
++
+ def RIB(request):
+     rib = RIB_Model.objects.all()
+     response = {}
+@@ -28,31 +27,67 @@
+         })
+     return JsonResponse(response)
+ 
+-def FIB(request):
+-    fib = FIB_Model.objects.all()
+-    response = {}
++def genTopo(request):
++    topoInfo = analyze_routing_topology()
+     try:
+-        for f in fib:
+-            if response.get(f.deviceId.id) is None:
+-                response[f.deviceId.id] = []
+-            response[f.deviceId.id].append({
+-                'dstIP': f.dstIP,
+-                'outInterfaceId': f.outInterfaceId
++        response = {}
++        for srcIP, dstIP, next_hop, interface in topoInfo:
++            if response.get(srcIP) is None:
++                response[srcIP] = []
++            response[srcIP].append({
++                'next_hop': next_hop,
++                'dstIP': dstIP,  #用于转发表，建立拓扑可以不用用到这个字段
++                'interface': interface
+             })
++        return JsonResponse(response)
+     except Exception as e:
+         print("error!!!",str(e))
+         return HttpResponse(type(e).__name__+" "+str(e),status=500)
+-    return JsonResponse(response)
++
++def FIB(request):
++    fib = analyze_fib()
++    try:
++        response = {}
++        for i, (node, entries)in enumerate(fib.items()):
++            if response.get(node) is None:
++                response[node] = []
++            device = deviceModel.objects.get(id= i + 1)
++            for entry in entries:
++                # 存入数据库操作，注意这里是更新覆盖的
++                FIB_Model.objects.update_or_create(
++                    deviceId_id=device.id,
++                    dstIP=entry['dstIP'],
++                    outInterfaceId=entry['outInterfaceId']
++                )
++                response[node].append({
++                    'dstIP': entry['dstIP'],
++                    'outInterfaceId': entry['outInterfaceId']
++                })
++        return JsonResponse(response)
++    except Exception as e:
++        return HttpResponse(f"Internal Server Error: {str(e)}", status=500)
+ 
+ def verifyTable(request):
+-    verify = verifyTable.objects.all()
+-    response = {}
+-    for v in verify:
+-        if response.get(v.deviceId.id) is None:
+-            response[v.deviceId.id] = []
+-        response[v.deviceId.id].append({
+-            'srcIP': v.srcIP,
+-            'inInterfaceId': v.interfaceId
+-        })
+-    return JsonResponse(response)
++    vt = analyze_vt()
++    try:
++        response = {}
++        #enumerate(vt.items())
++        for i, (node, entries) in enumerate(vt.items()):
++            if response.get(node) is None:
++                response[node] = []
++            device = deviceModel.objects.get(id = i+1)
++            for entry in entries:
++                #存入数据库操作，注意这里是更新覆盖的
++                verifyTable_Model.objects.update_or_create(
++                    deviceId_id=device.id,
++                    srcIP=entry['srcIP'],
++                    inInterfaceId=entry['inInterfaceId']
++                )
++                response[node].append({
++                    'srcIP': entry['srcIP'],
++                    'inInterfaceId': entry['inInterfaceId']
++                })
++        return JsonResponse(response)
++    except Exception as e:
++        return HttpResponse(f"Internal Server Error: {str(e)}", status=500)
+ 
+Index: controller/admin.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.contrib import admin\r\nfrom controller.models import *\r\n\r\nadmin.site.register(RIB_Model)\r\nadmin.site.register(FIB_Model)\r\nadmin.site.register(verifyTable)\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/controller/admin.py b/controller/admin.py
+--- a/controller/admin.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ b/controller/admin.py	(date 1713689710350)
+@@ -3,4 +3,4 @@
+ 
+ admin.site.register(RIB_Model)
+ admin.site.register(FIB_Model)
+-admin.site.register(verifyTable)
++admin.site.register(verifyTable_Model)
+Index: controller/models.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.db import models\r\n# from api.models import *\r\n\r\nclass RIB_Model(models.Model):\r\n    id=models.AutoField(primary_key=True)\r\n    deviceId = models.ForeignKey('api.deviceModel', on_delete=models.CASCADE)\r\n    srcIP = models.CharField(max_length=17)\r\n    dstIP = models.CharField(max_length=17)\r\n    nextHop = models.CharField(max_length=15)\r\n    inInterfaceId = models.IntegerField()\r\n    outInterfaceId = models.IntegerField()\r\n\r\nclass FIB_Model(models.Model):\r\n    id = models.AutoField(primary_key=True)\r\n    deviceId = models.ForeignKey('api.deviceModel', on_delete=models.CASCADE)\r\n    dstIP = models.CharField(max_length=17)\r\n    outInterfaceId = models.CharField(max_length=15)\r\n\r\nclass verifyTable(models.Model):\r\n    id = models.AutoField(primary_key=True)\r\n    deviceId = models.ForeignKey('api.deviceModel', on_delete=models.CASCADE)\r\n    srcIP = models.CharField(max_length=17)\r\n    inInterfaceId = models.CharField(max_length=15)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/controller/models.py b/controller/models.py
+--- a/controller/models.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ b/controller/models.py	(date 1713689710350)
+@@ -16,7 +16,7 @@
+     dstIP = models.CharField(max_length=17)
+     outInterfaceId = models.CharField(max_length=15)
+ 
+-class verifyTable(models.Model):
++class verifyTable_Model(models.Model):
+     id = models.AutoField(primary_key=True)
+     deviceId = models.ForeignKey('api.deviceModel', on_delete=models.CASCADE)
+     srcIP = models.CharField(max_length=17)
+Index: api/migrations/0005_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+===================================================================
+diff --git a/api/migrations/0005_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py b/api/migrations/0005_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+deleted file mode 100644
+--- a/api/migrations/0005_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,28 +0,0 @@
+-# Generated by Django 4.1 on 2024-04-06 18:28
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ("api", "0004_alter_controllermodel_id_alter_dataplanemodel_id_and_more"),
+-    ]
+-
+-    operations = [
+-        migrations.AlterField(
+-            model_name="controllermodel",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-        migrations.AlterField(
+-            model_name="dataplanemodel",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-        migrations.AlterField(
+-            model_name="devicemodel",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-    ]
+Index: api/migrations/0007_rename_thoughput_dataplanemodel_throughput.py
+===================================================================
+diff --git a/api/migrations/0007_rename_thoughput_dataplanemodel_throughput.py b/api/migrations/0007_rename_thoughput_dataplanemodel_throughput.py
+deleted file mode 100644
+--- a/api/migrations/0007_rename_thoughput_dataplanemodel_throughput.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,18 +0,0 @@
+-# Generated by Django 4.1 on 2024-04-07 04:04
+-
+-from django.db import migrations
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ("api", "0006_alter_controllermodel_id_alter_dataplanemodel_id_and_more"),
+-    ]
+-
+-    operations = [
+-        migrations.RenameField(
+-            model_name="dataplanemodel",
+-            old_name="thoughput",
+-            new_name="throughput",
+-        ),
+-    ]
+Index: api/migrations/0002_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+===================================================================
+diff --git a/api/migrations/0002_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py b/api/migrations/0002_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+deleted file mode 100644
+--- a/api/migrations/0002_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,28 +0,0 @@
+-# Generated by Django 4.1 on 2024-04-06 18:18
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ("api", "0001_initial"),
+-    ]
+-
+-    operations = [
+-        migrations.AlterField(
+-            model_name="controllermodel",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-        migrations.AlterField(
+-            model_name="dataplanemodel",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-        migrations.AlterField(
+-            model_name="devicemodel",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-    ]
+Index: api/migrations/0004_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+===================================================================
+diff --git a/api/migrations/0004_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py b/api/migrations/0004_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+deleted file mode 100644
+--- a/api/migrations/0004_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,34 +0,0 @@
+-# Generated by Django 4.1 on 2024-04-06 18:26
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ("api", "0003_alter_controllermodel_id_alter_dataplanemodel_id_and_more"),
+-    ]
+-
+-    operations = [
+-        migrations.AlterField(
+-            model_name="controllermodel",
+-            name="id",
+-            field=models.AutoField(
+-                auto_created=True, primary_key=True, serialize=False
+-            ),
+-        ),
+-        migrations.AlterField(
+-            model_name="dataplanemodel",
+-            name="id",
+-            field=models.AutoField(
+-                auto_created=True, primary_key=True, serialize=False
+-            ),
+-        ),
+-        migrations.AlterField(
+-            model_name="devicemodel",
+-            name="id",
+-            field=models.AutoField(
+-                auto_created=True, primary_key=True, serialize=False
+-            ),
+-        ),
+-    ]
+Index: api/migrations/0006_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+===================================================================
+diff --git a/api/migrations/0006_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py b/api/migrations/0006_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+deleted file mode 100644
+--- a/api/migrations/0006_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,34 +0,0 @@
+-# Generated by Django 4.1 on 2024-04-06 18:30
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ("api", "0005_alter_controllermodel_id_alter_dataplanemodel_id_and_more"),
+-    ]
+-
+-    operations = [
+-        migrations.AlterField(
+-            model_name="controllermodel",
+-            name="id",
+-            field=models.BigAutoField(
+-                auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+-            ),
+-        ),
+-        migrations.AlterField(
+-            model_name="dataplanemodel",
+-            name="id",
+-            field=models.BigAutoField(
+-                auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+-            ),
+-        ),
+-        migrations.AlterField(
+-            model_name="devicemodel",
+-            name="id",
+-            field=models.BigAutoField(
+-                auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+-            ),
+-        ),
+-    ]
+Index: api/migrations/0001_initial.py
+===================================================================
+diff --git a/api/migrations/0001_initial.py b/api/migrations/0001_initial.py
+deleted file mode 100644
+--- a/api/migrations/0001_initial.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,64 +0,0 @@
+-# Generated by Django 4.1 on 2024-04-06 18:06
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    initial = True
+-
+-    dependencies = []
+-
+-    operations = [
+-        migrations.CreateModel(
+-            name="controllerModel",
+-            fields=[
+-                (
+-                    "id",
+-                    models.BigAutoField(
+-                        auto_created=True,
+-                        primary_key=True,
+-                        serialize=False,
+-                        verbose_name="ID",
+-                    ),
+-                ),
+-                ("usage", models.FloatField(default=0)),
+-                ("VPUF", models.FloatField(default=0)),
+-                ("VPA", models.IntegerField(default=0)),
+-            ],
+-        ),
+-        migrations.CreateModel(
+-            name="dataPlaneModel",
+-            fields=[
+-                (
+-                    "id",
+-                    models.BigAutoField(
+-                        auto_created=True,
+-                        primary_key=True,
+-                        serialize=False,
+-                        verbose_name="ID",
+-                    ),
+-                ),
+-                ("thoughput", models.IntegerField(default=0)),
+-                ("filterCount", models.IntegerField(default=0)),
+-                ("avgDelay", models.FloatField(default=0)),
+-            ],
+-        ),
+-        migrations.CreateModel(
+-            name="deviceModel",
+-            fields=[
+-                (
+-                    "id",
+-                    models.BigAutoField(
+-                        auto_created=True,
+-                        primary_key=True,
+-                        serialize=False,
+-                        verbose_name="ID",
+-                    ),
+-                ),
+-                ("prefixCount", models.IntegerField(default=0)),
+-                ("throughput", models.IntegerField(default=0)),
+-                ("filterCount", models.IntegerField(default=0)),
+-            ],
+-        ),
+-    ]
+Index: controller/migrations/0002_alter_fib_model_id_alter_rib_model_id.py
+===================================================================
+diff --git a/controller/migrations/0002_alter_fib_model_id_alter_rib_model_id.py b/controller/migrations/0002_alter_fib_model_id_alter_rib_model_id.py
+deleted file mode 100644
+--- a/controller/migrations/0002_alter_fib_model_id_alter_rib_model_id.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,23 +0,0 @@
+-# Generated by Django 4.2 on 2024-04-17 18:24
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ("controller", "0001_initial"),
+-    ]
+-
+-    operations = [
+-        migrations.AlterField(
+-            model_name="fib_model",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-        migrations.AlterField(
+-            model_name="rib_model",
+-            name="id",
+-            field=models.AutoField(primary_key=True, serialize=False),
+-        ),
+-    ]
+Index: api/migrations/0003_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+===================================================================
+diff --git a/api/migrations/0003_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py b/api/migrations/0003_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py
+deleted file mode 100644
+--- a/api/migrations/0003_alter_controllermodel_id_alter_dataplanemodel_id_and_more.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,34 +0,0 @@
+-# Generated by Django 4.1 on 2024-04-06 18:25
+-
+-from django.db import migrations, models
+-
+-
+-class Migration(migrations.Migration):
+-
+-    dependencies = [
+-        ("api", "0002_alter_controllermodel_id_alter_dataplanemodel_id_and_more"),
+-    ]
+-
+-    operations = [
+-        migrations.AlterField(
+-            model_name="controllermodel",
+-            name="id",
+-            field=models.IntegerField(
+-                auto_created=True, primary_key=True, serialize=False
+-            ),
+-        ),
+-        migrations.AlterField(
+-            model_name="dataplanemodel",
+-            name="id",
+-            field=models.IntegerField(
+-                auto_created=True, primary_key=True, serialize=False
+-            ),
+-        ),
+-        migrations.AlterField(
+-            model_name="devicemodel",
+-            name="id",
+-            field=models.IntegerField(
+-                auto_created=True, primary_key=True, serialize=False
+-            ),
+-        ),
+-    ]
+Index: controller/migrations/0001_initial.py
+===================================================================
+diff --git a/controller/migrations/0001_initial.py b/controller/migrations/0001_initial.py
+deleted file mode 100644
+--- a/controller/migrations/0001_initial.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ /dev/null	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
+@@ -1,63 +0,0 @@
+-# Generated by Django 4.2 on 2024-04-17 18:19
+-
+-from django.db import migrations, models
+-import django.db.models.deletion
+-
+-
+-class Migration(migrations.Migration):
+-
+-    initial = True
+-
+-    dependencies = [
+-        ("api", "0007_rename_thoughput_dataplanemodel_throughput"),
+-    ]
+-
+-    operations = [
+-        migrations.CreateModel(
+-            name="RIB_Model",
+-            fields=[
+-                (
+-                    "id",
+-                    models.BigAutoField(
+-                        auto_created=True,
+-                        primary_key=True,
+-                        serialize=False,
+-                        verbose_name="ID",
+-                    ),
+-                ),
+-                ("dstIP", models.CharField(max_length=17)),
+-                ("nextHop", models.CharField(max_length=15)),
+-                ("interfaceId", models.IntegerField()),
+-                (
+-                    "deviceId",
+-                    models.ForeignKey(
+-                        on_delete=django.db.models.deletion.CASCADE,
+-                        to="api.devicemodel",
+-                    ),
+-                ),
+-            ],
+-        ),
+-        migrations.CreateModel(
+-            name="FIB_Model",
+-            fields=[
+-                (
+-                    "id",
+-                    models.BigAutoField(
+-                        auto_created=True,
+-                        primary_key=True,
+-                        serialize=False,
+-                        verbose_name="ID",
+-                    ),
+-                ),
+-                ("dstIP", models.CharField(max_length=17)),
+-                ("interfaceId", models.CharField(max_length=15)),
+-                (
+-                    "deviceId",
+-                    models.ForeignKey(
+-                        on_delete=django.db.models.deletion.CASCADE,
+-                        to="api.devicemodel",
+-                    ),
+-                ),
+-            ],
+-        ),
+-    ]
+Index: controller/tests.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.test import TestCase\r\n\r\n# Create your tests here.\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/controller/tests.py b/controller/tests.py
+--- a/controller/tests.py	(revision cb734637a68adf31f1123d3bec79ca26b6bdf552)
++++ b/controller/tests.py	(date 1713689710351)
+@@ -1,3 +1,91 @@
+-from django.test import TestCase
++import requests
++import networkx as nx
++import matplotlib.pyplot as plt
++import ipaddress
++import random
++def is_valid_ip(ip_with_mask):
++    try:
++        ip, mask = ip_with_mask.split('/')
++        ipaddress.ip_address(ip)
++        if not 0 <= int(mask) <= 32:
++            return False
++        return True
++    except ValueError:
++        return False
++
++#建立拓扑
++def analyze_routing_topology():
++    # 获取路由表信息 http://127.0.0.1:8000/controller/rib
++    url = 'http://127.0.0.1:8000/controller/rib'
++    try:
++        response = requests.get(url)
++        response.raise_for_status()  # 检查响应
++        data = response.json()['data']
++    except requests.RequestException as e:
++        return f"Request Fail: {e}"
++
++    # 分析下一跳
++    connections = []
++    for entry in data.values():
++        for route in entry:
++            if all(is_valid_ip(route[field]) for field in ['srcIP', 'nextHop', 'dstIP']):
++                interface = f"In:{route['inInterfaceId']} Out:{route['outInterfaceId']}"
++                #connections.append((route['srcIP'], route['nextHop'], interface))
++                connections.append((route['srcIP'], route['dstIP'], route['nextHop'], interface))
++                print(connections)
++            else:
++                print(f"Invalid IP format found and skipped: {route}")
++
++    # 建立连接关系
++    G = nx.DiGraph()
++    for srcIP,  dstIP, next_hop, interface in connections:
++        G.add_edge(srcIP, next_hop, label=interface) #用下一跳去建立连接关系
++
++    pos = nx.spring_layout(G)
++    nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=2000, font_size=10)
++    edge_labels = nx.get_edge_attributes(G, 'label')
++    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
++    # plt.show()
++
++    return connections
++
++#根据拓扑信息随机选择相邻的三个节点，
++def fetch_and_select_nodes():
++    # 获取拓扑信息
++    url = 'http://127.0.0.1:8000/controller/genTopo'
++    try:
++        response = requests.get(url)
++        response.raise_for_status()
++        data = response.json()['data']
++        node_keys = list(data.keys())
++        if len(node_keys) < 3:
++            return "Not enough nodes to select three adjacent.", None
++        # 随机选择三个相邻节点
++        # random_start = random.randint(0, len(node_keys) - 3)
++        # selected_nodes = node_keys[random_start:random_start + 3]
++        # 改成头三个节点，确保每次选择的节点一样
++        selected_nodes = node_keys[:3]
++        return data, selected_nodes
++    except requests.RequestException as e:
++        return f"Request Fail: {str(e)}", None
++
++# 转发表（目的ip/mask，出端口），转发表格式为{deviceId:[{dstIP,mask,outInterfaceId}]}
++def analyze_fib():
++    data, selected_nodes = fetch_and_select_nodes()
++    fib = {}
+ 
+-# Create your tests here.
++    for node in selected_nodes:
++        entries = data[node]
++        fib[node] = [{'dstIP': entry['dstIP'].split('/')[0] +  '/' + entry['dstIP'].split('/')[1],
++                      'outInterfaceId': entry['interface'].split('Out:')[1]} for entry in entries]
++    return fib
++
++#生成验证表, 验证表格式为 {deviceId:[{srcIP,mask,inInterfaceId}]}
++def analyze_vt():
++    data, selected_nodes = fetch_and_select_nodes()
++    vt = {}
++    for node in selected_nodes:
++        entries = data[node]
++        vt[node] = [{'srcIP': node.split('/')[0] +  '/' + node.split('/')[1],
++                     'inInterfaceId': entry['interface'].split('In:')[1].split(' ')[0]} for entry in entries]
++    return vt
+diff --git a/myAdmin/migrations/__init__.py b/myAdmin/migrations/__init__.py
+deleted file mode 100644
+diff --git a/controller/migrations/__init__.py b/controller/migrations/__init__.py
+deleted file mode 100644
+diff --git a/api/migrations/__init__.py b/api/migrations/__init__.py
+deleted file mode 100644

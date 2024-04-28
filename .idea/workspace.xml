@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="设备信息展示、验证状态切换&#10;控制器信息展示、路由表&#10;cpu折线图&#10;拓扑图">
+      <change afterPath="$PROJECT_DIR$/templates/cpuLine.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/rib.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/topo_index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/devices/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/devices/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/devices/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/devices/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myAdmin/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/myAdmin/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myAdmin/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/myAdmin/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/html/LeftSlidebarAdmin.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/html/LeftSlidebarAdmin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin_index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/controller_manage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/controller_manage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/device_manage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/device_manage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/topo.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/topo.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/master" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2eag027uPSaZyUlK811nkWXCdxi" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/program/packetVerify/templates&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.templateLanguages.PyTemplateLanguageModulesConfigurable&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\program\packetVerify\templates" />
+      <recent name="D:\program\packetVerify\static\plugins\images" />
+      <recent name="D:\program\packetVerify\controller" />
+      <recent name="D:\program\packetVerify\packetVerify" />
+      <recent name="D:\program\packetVerify\static" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\program\packetVerify\api" />
+      <recent name="D:\program\packetVerify\static\html" />
+      <recent name="D:\program\packetVerify\static" />
+      <recent name="D:\program\packetVerify" />
+      <recent name="D:\program\packetVerify\templates" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Django Server.packetVerify">
+    <configuration name="debug" type="PythonConfigurationType" factoryName="Python">
+      <module name="packetVerify" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="D:\apps\anaconda3\envs\packetVerify\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manage.py" />
+      <option name="PARAMETERS" value="runserver" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="packetVerify" type="Python.DjangoServer" factoryName="Django server">
+      <module name="packetVerify" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="packetVerify.settings" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Django Server.packetVerify" />
+      <item itemvalue="Python.debug" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="" />
+      <created>1712147879578</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1712147879578</updated>
+      <workItem from="1712147885157" duration="24630000" />
+      <workItem from="1712474822585" duration="11064000" />
+      <workItem from="1712549069083" duration="11000" />
+      <workItem from="1712755873327" duration="756000" />
+      <workItem from="1713151576341" duration="8352000" />
+      <workItem from="1713254958073" duration="37497000" />
+      <workItem from="1713541254447" duration="1762000" />
+      <workItem from="1713599795446" duration="54000" />
+      <workItem from="1713689319833" duration="11878000" />
+      <workItem from="1713946739789" duration="36863000" />
+      <workItem from="1714234026428" duration="26657000" />
+      <workItem from="1714290076349" duration="338000" />
+    </task>
+    <task id="LOCAL-00001" summary="尝试修复admin ui问题">
+      <created>1713154020933</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713154020933</updated>
+    </task>
+    <task id="LOCAL-00002" summary="api controller">
+      <created>1713384205695</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1713384205695</updated>
+    </task>
+    <task id="LOCAL-00003" summary="add controller.genTopo">
+      <created>1713414806775</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1713414806775</updated>
+    </task>
+    <task id="LOCAL-00004" summary="add verifyTable">
+      <created>1713416367986</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1713416367986</updated>
+    </task>
+    <task id="LOCAL-00005" summary="将test文件名改成funs，以避免和django test混淆">
+      <created>1713690188772</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1713690188772</updated>
+    </task>
+    <task id="LOCAL-00006" summary="add 设备管理信息展示 连接数据平面">
+      <created>1714138853624</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1714138853624</updated>
+    </task>
+    <task id="LOCAL-00007" summary="add 设备管理信息展示 连接数据平面">
+      <created>1714232980021</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1714232980021</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="尝试修复admin ui问题" />
+    <MESSAGE value="api controller" />
+    <MESSAGE value="add controller.genTopo" />
+    <MESSAGE value="add verifyTable" />
+    <MESSAGE value="将test文件名改成funs，以避免和django test混淆" />
+    <MESSAGE value="add 设备管理信息展示 连接数据平面" />
+    <MESSAGE value="设备信息展示、验证状态切换&#10;控制器信息展示、路由表&#10;cpu折线图&#10;拓扑图" />
+    <option name="LAST_COMMIT_MESSAGE" value="设备信息展示、验证状态切换&#10;控制器信息展示、路由表&#10;cpu折线图&#10;拓扑图" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/api/apiResponse.py</url>
+          <line>28</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/packetVerify$debug.coverage" NAME="debug Coverage Results" MODIFIED="1712475663591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

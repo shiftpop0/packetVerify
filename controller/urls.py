@@ -11,4 +11,5 @@ urlpatterns = [
     path("verifyTable", verifyTable),#验证表
     path("topoLink", topoLink), #拓扑链路信息
     path("topoNode", topoNode), #拓扑节点（主机）信息
+    path("showController", showController), #显示控制器信息"
 ]

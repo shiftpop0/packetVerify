@@ -39,7 +39,7 @@
 </head>
 <body>
     <div id="app">
-        <el-button :loading="isLoading" @click="fetchTopology" type="primary">加载拓扑</el-button>
+{#        <el-button :loading="isLoading" @click="fetchTopology" type="primary">加载拓扑</el-button>#}
         <div id="network"></div>
         <el-alert v-if="errorMessage" :title="errorMessage" type="error" show-icon></el-alert>
     </div>
@@ -61,6 +61,7 @@
                     errorMessage.value = '';
                     axios.get('http://127.0.0.1:8000/controller/genTopo')
                         .then(response => {
+                            console.log(response.data.data);
                             processData(response.data.data);
                             isLoading.value = false;
                         })
@@ -225,6 +226,9 @@
                 });
 
                 return { fetchTopology, isLoading, errorMessage };
+            },
+            mounted() {
+                this.fetchTopology();
             },
             components: {
                 ElButton,

@@ -124,3 +124,8 @@ def topoNode(request):
     except Exception as e:
         print("error!!!", str(e))
         return HttpResponse(f"{type(e).__name__} {str(e)}", status=500)
+
+def showController(request):
+    rib = RIB_Model.objects.all()
+    response = [{'ribLen': len(rib), 'pathNum': 1, 'deviceNum': 3}]
+    return JsonResponse(response, safe=False)

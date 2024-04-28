@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<TITLE>实时更新数据的jQuery图表插件DEMO演示</TITLE>
+
+<!-- <script type="text/javascript" src="js/jquery.js"></script> -->
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="js/highcharts.js"></script> -->
+<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+
+<script type="text/javascript">
+$(function () {
+$(document).ready(function() {
+	Highcharts.setOptions({
+		global: {
+			useUTC: false
+		}
+	});
+
+	var chart;
+	$('#container').highcharts({
+		chart: {
+			type: 'spline',
+			animation: Highcharts.svg, // don't animate in old IE
+			marginRight: 10,
+			events: {
+				load: function() {
+					// 在这里更新数据，最后一个参数是更新间隔
+					// set up the updating of the chart each second
+					var series = this.series[0];
+					setInterval(function() {
+						var x = (new Date()).getTime(), // current time
+							y = Math.random() * 10 + 50;
+						series.addPoint([x, y], true, true);
+					}, 2000);
+				}
+			}
+		},
+		title: {
+			text: '控制器CPU利用率'
+		},
+		xAxis: {
+			type: 'datetime',
+			tickPixelInterval: 10
+		},
+		yAxis: {
+			title: {
+				text: ''
+			},
+            min: 0, // 设置y轴最小值为0
+            max: 100,
+            labels: {
+                formatter: function() {
+                    return this.value+"%"; // 在y轴标签中不显示百分号
+                }
+            },
+			plotLines: [{
+				value: 0,
+				width: 1,
+				color: '#808080'
+			}]
+		},
+		tooltip: {
+			formatter: function() {
+					return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                        (Highcharts.numberFormat(this.y, 2)+'%');
+			}
+		},
+		legend: {
+			enabled: false
+		},
+		exporting: {
+			enabled: false
+		},
+		series: [{
+			name: 'Random data',
+			data: (function() {
+				// generate an array of random data
+				var data = [],
+					time = (new Date()).getTime(),
+					i;
+				// 数据在这里初始化
+				for (i = -9; i <= 0; i++) {
+					data.push({
+						x: time + i * 2000,
+						// y: 5
+						y: Math.random() * 10 + 50
+					});
+				}
+				return data;
+			})()
+		}]
+	});
+});
+
+});
+</script>
+</HEAD>
+
+<BODY>
+{#<div id="status" name="status">状态信息</div>#}
+<div id="container" style="width:700px;height:400px;margin:0 auto;"></div>
+<div style="text-align:center;clear:both;">
+</div>
+</BODY>
+</HTML>
