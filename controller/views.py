@@ -127,5 +127,5 @@ def topoNode(request):
 
 def showController(request):
     rib = RIB_Model.objects.all()
-    response = [{'ribLen': len(rib), 'pathNum': 1, 'deviceNum': 3}]
+    response = [{'ribLen': len(rib), 'pathNum': 1, 'deviceNum': 4}]
     return JsonResponse(response, safe=False)
