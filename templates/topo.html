@@ -77,7 +77,30 @@
                     const edges = [];
                     const nodeMap = new Map();
 
+                    // 添加控制器节点
                     let id = 0;
+                    nodes.push({
+                        id: id,
+                        label: 'controller',
+                        shape: 'image',
+                        image: '/static/plugins/images/controller.png',
+                        size: 30,
+                        font: {
+                            color: '#4B4B4B',
+                            face: 'Arial',
+                            vadjust: -13
+                        },
+                        color: {
+                            background: '#FF6347',
+                            border: '#D2E5FF',
+                            highlight: {
+                                background: '#FF6347',
+                                border: '#FF6347'
+                            }
+                        }
+                    });
+                    nodeMap.set('controller', id);
+                    id++;
 
                     Object.keys(data).forEach(network => {
                         if (!nodeMap.has(network)) {
@@ -137,13 +160,28 @@
                                 font: { align: 'top' },
                                 color: '#848484',
                                 arrows: {
-                                    to: { enabled: false, scaleFactor: 1.2 }  //设置成false，不显示箭头
+                                    to: { enabled: false, scaleFactor: 1.2 }
                                 },
-                                dashes: [5, 5, 0, 0]
+                                dashes: false // 用实线连接节点
+                                {#dashes: [5, 5, 0, 0]#}
                             });
                         });
                     });
-
+                    // 添加所有节点到控制器的连接
+                    nodeMap.forEach((value, key) => {
+                        if (key !== 'controller') {
+                            edges.push({
+                                from: value,
+                                to: nodeMap.get('controller'),
+                                label: '',
+                                font: { align: 'top' },
+                                color: '#848484',
+                                arrows: { to: { enabled: false } }, // 禁用箭头
+                                dashes: [5, 5],
+                                toController: true  // 特定标识符用于动画
+                            });
+                        }
+                    });
                     initNetwork(nodes, edges);
                 };
 
@@ -155,20 +193,21 @@
                     };
                     const options = {
                         layout: {
-                            hierarchical: {
-                                enabled: false // 禁用分层布局
-                            }
+                            randomSeed: undefined,  // 可以指定随机种子以获得重复的结果
+                            improvedLayout: true
                         },
                         physics: {
-                            enabled: true,
-                            barnesHut: {
-                                gravitationalConstant: -30000,
-                                centralGravity: 0.3,
-                                springLength: 95,
-                                springConstant: 0.04,
-                                damping: 0.09,
-                                avoidOverlap: 0.1
-                            }
+                            enabled: false,  // 启用物理效果以使节点自然分散
+                            solver: 'forceAtlas2Based',
+                            forceAtlas2Based: {
+                                gravitationalConstant: -500,  // 引力常数，负值表示斥力
+                                centralGravity: 0.001,  // 中心引力
+                                springLength: 400,  // 弹簧长度，控制节点之间的距离
+                                springConstant: 0.05,  // 弹簧常数
+                                damping: 0.4,  // 阻尼
+                                avoidOverlap: 0.4  // 避免重叠
+                            },
+                            stabilization: { iterations: 150 }  // 稳定迭代次数
                         },
                         nodes: {
                             borderWidth: 2,
@@ -201,23 +240,43 @@
                     startEdgeAnimation();
                 };
 
-                const startEdgeAnimation = () => {
+                    const startEdgeAnimation = () => {
                     const updateEdges = () => {
-                        dashOffset.value = (dashOffset.value + 0.03) % 10; // 可以根据需要调整这个值
+                        dashOffset.value = (dashOffset.value + 0.03) % 10;
                         const updatedEdges = network.value.body.data.edges.get({
-                            returnType: 'Object'
+                            returnType: 'Object',
+                            filter: function (item) {
+                                return item.toController === true;  // 只选取到控制器的连接
+                            }
                         });
                         for (const edgeId in updatedEdges) {
                             const edge = updatedEdges[edgeId];
                             network.value.body.data.edges.update({
                                 id: edgeId,
-                                dashes: [5, 5, 0,  dashOffset.value] // 使用平衡的虚线和间隙配置
+                                dashes: [5, 5, 0, dashOffset.value]
                             });
                         }
                     };
 
-                    intervalId.value = setInterval(updateEdges,50); // 保持更新间隔为50毫秒
+                    intervalId.value = setInterval(updateEdges, 50);
                 };
+                {#const startEdgeAnimation = () => {#}
+                {#    const updateEdges = () => {#}
+                {#        dashOffset.value = (dashOffset.value + 0.03) % 10; // 可以根据需要调整这个值#}
+                {#        const updatedEdges = network.value.body.data.edges.get({#}
+                {#            returnType: 'Object'#}
+                {#        });#}
+                {#        for (const edgeId in updatedEdges) {#}
+                {#            const edge = updatedEdges[edgeId];#}
+                {#            network.value.body.data.edges.update({#}
+                {#                id: edgeId,#}
+                {#                dashes: [5, 5, 0,  dashOffset.value] // 使用平衡的虚线和间隙配置#}
+                {#            });#}
+                {#        }#}
+                {#    };#}
+                {##}
+                {#    intervalId.value = setInterval(updateEdges,50); // 保持更新间隔为50毫秒#}
+                {#};#}
 
                 onUnmounted(() => {
                     if (intervalId.value) {
