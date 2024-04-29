@@ -127,12 +127,12 @@
                             nodeMap.set(network, id);
                             id++;
                         }
-
-                        data[network].forEach(link => {
-                            if (!nodeMap.has(link.next_hop)) {
+                        // 遍历data数组，为每个设备及其连接创建节点和边
+                        data.forEach(device => {
+                            if (!nodeMap.has(device.deviceId)) {
                                 nodes.push({
-                                    id: id,
-                                    label: link.next_hop,
+                                    id: device.deviceId,
+                                    label: `设备${device.deviceId}: ${device.srcIP}`,
                                     shape: 'image',
                                     image: '/static/plugins/images/router.png',
                                     size: 30,
@@ -150,23 +150,55 @@
                                         }
                                     }
                                 });
-                                nodeMap.set(link.next_hop, id);
-                                id++;
+                                nodeMap.set(device.deviceId, device.deviceId);
                             }
-                            edges.push({
-                                from: nodeMap.get(network),
-                                to: nodeMap.get(link.next_hop),
-                                label: link.interface,
-                                font: { align: 'top' },
-                                color: '#848484',
-                                arrows: {
-                                    to: { enabled: false, scaleFactor: 1.2 }
-                                },
-                                dashes: false // 用实线连接节点
-                                {#dashes: [5, 5, 0, 0]#}
-                            });
+
+                            // 查找下一个设备（next_hop）并连接
+                            if (device.next_hop) {
+                                const nextDevice = data.find(d => d.srcIP.split('/')[0] === device.next_hop); // 使用srcIP分割以匹配next_hop
+                                if (nextDevice && !nodeMap.has(nextDevice.deviceId)) {
+                                    nodes.push({
+                                        id: nextDevice.deviceId,
+                                        label: `设备${nextDevice.deviceId}: ${nextDevice.srcIP}`,
+                                        shape: 'image',
+                                        image: '/static/plugins/images/router.png',
+                                        size: 30,
+                                        font: {
+                                            color: '#4B4B4B',
+                                            face: 'Arial',
+                                            vadjust: -22
+                                        },
+                                        color: {
+                                            background: '#97C2FC',
+                                            border: '#2B7CE9',
+                                            highlight: {
+                                                background: '#D2E5FF',
+                                                border: '#2B7CE9'
+                                            }
+                                        }
+                                    });
+                                    nodeMap.set(nextDevice.deviceId, nextDevice.deviceId);
+                                }
+
+                                // 添加边，连接当前设备的出接口到下一个设备的入接口
+                                if (nextDevice) {
+                                    edges.push({
+                                        from: nodeMap.get(device.deviceId),
+                                        to: nodeMap.get(nextDevice.deviceId),
+                                        label: `出端口: ${device.outInterface} -> 入端口:${nextDevice.inInterface}`,
+                                        font: { align: 'top' },
+                                        color: '#848484',
+                                        arrows: {
+                                            to: { enabled: false, scaleFactor: 1.2 }
+                                        },
+                                        dashes: false // 使用实线连接
+                                    });
+                                }
+                            }
                         });
+
                     });
+
                     // 添加所有节点到控制器的连接
                     nodeMap.forEach((value, key) => {
                         if (key !== 'controller') {
@@ -200,8 +232,8 @@
                             enabled: false,  // 启用物理效果以使节点自然分散
                             solver: 'forceAtlas2Based',
                             forceAtlas2Based: {
-                                gravitationalConstant: -500,  // 引力常数，负值表示斥力
-                                centralGravity: 0.001,  // 中心引力
+                                gravitationalConstant: -400,  // 引力常数，负值表示斥力
+                                centralGravity: 0.01,  // 中心引力
                                 springLength: 400,  // 弹簧长度，控制节点之间的距离
                                 springConstant: 0.05,  // 弹簧常数
                                 damping: 0.4,  // 阻尼
@@ -260,23 +292,6 @@
 
                     intervalId.value = setInterval(updateEdges, 50);
                 };
-                {#const startEdgeAnimation = () => {#}
-                {#    const updateEdges = () => {#}
-                {#        dashOffset.value = (dashOffset.value + 0.03) % 10; // 可以根据需要调整这个值#}
-                {#        const updatedEdges = network.value.body.data.edges.get({#}
-                {#            returnType: 'Object'#}
-                {#        });#}
-                {#        for (const edgeId in updatedEdges) {#}
-                {#            const edge = updatedEdges[edgeId];#}
-                {#            network.value.body.data.edges.update({#}
-                {#                id: edgeId,#}
-                {#                dashes: [5, 5, 0,  dashOffset.value] // 使用平衡的虚线和间隙配置#}
-                {#            });#}
-                {#        }#}
-                {#    };#}
-                {##}
-                {#    intervalId.value = setInterval(updateEdges,50); // 保持更新间隔为50毫秒#}
-                {#};#}
 
                 onUnmounted(() => {
                     if (intervalId.value) {
