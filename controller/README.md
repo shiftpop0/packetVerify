@@ -5,36 +5,40 @@
 {
     "code": 200,
     "order": null,
-    "data": {
-        "10.0.8.0/24": [
-            {
-                "next_hop": "10.0.4.0/24",
-                "dstIP": "10.0.4.0/24",
-                "interface": "In:1 Out:2"
-            }
-        ],
-        "10.0.4.0/24": [
-            {
-                "next_hop": "10.0.3.0/24",
-                "dstIP": "10.0.3.0/24",
-                "interface": "In:2 Out:1"
-            }
-        ],
-        "10.0.3.0/24": [
-            {
-                "next_hop": "10.0.1.0/24",
-                "dstIP": "10.0.1.0/24",
-                "interface": "In:1 Out:2"
-            }
-        ],
-        "10.0.1.0/24": [
-            {
-                "next_hop": "10.0.9.0/24",
-                "dstIP": "10.0.9.0/24",
-                "interface": "In:1 Out:2"
-            }
-        ]
-    }
+    "data": [
+        {
+            "deviceId": "1",
+            "srcIP": "10.0.8.0/24",
+            "dstIP": "10.0.4.0/24",
+            "next_hop": "10.0.4.0",
+            "inInterface": 1,
+            "outInterface": 2
+        },
+        {
+            "deviceId": "2",
+            "srcIP": "10.0.4.0/24",
+            "dstIP": "10.0.3.0/24",
+            "next_hop": "10.0.3.0",
+            "inInterface": 2,
+            "outInterface": 1
+        },
+        {
+            "deviceId": "3",
+            "srcIP": "10.0.3.0/24",
+            "dstIP": "10.0.1.0/24",
+            "next_hop": "10.0.1.0",
+            "inInterface": 1,
+            "outInterface": 2
+        },
+        {
+            "deviceId": "4",
+            "srcIP": "10.0.1.0/24",
+            "dstIP": "\"\"",
+            "next_hop": "\"\"",
+            "inInterface": 1,
+            "outInterface": 2
+        }
+    ]
 }
 ```
 下发转发表接口：http://127.0.0.1:8000/controller/fib
@@ -42,26 +46,23 @@
 {
     "code": 200,
     "order": null,
-    "data": {
-        "10.0.4.0/24": [
-            {
-                "dstIP": "10.0.3.0/24",
-                "outInterfaceId": "1"
-            }
-        ],
-        "10.0.3.0/24": [
-            {
-                "dstIP": "10.0.1.0/24",
-                "outInterfaceId": "2"
-            }
-        ],
-        "10.0.1.0/24": [
-            {
-                "dstIP": "10.0.9.0/24",
-                "outInterfaceId": "2"
-            }
-        ]
-    }
+    "data": [
+        {
+            "deciceID": 1,
+            "dstIP": "10.0.4.0/24",
+            "outInterfaceId": 2
+        },
+        {
+            "deciceID": 2,
+            "dstIP": "10.0.3.0/24",
+            "outInterfaceId": 1
+        },
+        {
+            "deciceID": 3,
+            "dstIP": "10.0.1.0/24",
+            "outInterfaceId": 2
+        }
+    ]
 }
 ```
 下发验证表接口：http://127.0.0.1:8000/controller/verifyTable
@@ -69,26 +70,23 @@
 {
     "code": 200,
     "order": null,
-    "data": {
-        "10.0.8.0/24": [
-            {
-                "srcIP": "10.0.8.0/24",
-                "inInterfaceId": "1"
-            }
-        ],
-        "10.0.4.0/24": [
-            {
-                "srcIP": "10.0.4.0/24",
-                "inInterfaceId": "2"
-            }
-        ],
-        "10.0.3.0/24": [
-            {
-                "srcIP": "10.0.3.0/24",
-                "inInterfaceId": "1"
-            }
-        ]
-    }
+    "data": [
+        {
+            "deciceID": 1,
+            "srcIP": "10.0.8.0/24",
+            "inInterface": 1
+        },
+        {
+            "deciceID": 2,
+            "srcIP": "10.0.4.0/24",
+            "inInterface": 2
+        },
+        {
+            "deciceID": 3,
+            "srcIP": "10.0.3.0/24",
+            "inInterface": 1
+        }
+    ]
 }
 ```
 获取拓扑链路信息接口：http://127.0.0.1:8000/controller/topoLink
@@ -96,52 +94,40 @@
 {
     "code": 200,
     "order": null,
-    "data": {
-        "10.0.8.0/24": [
-            {
-                "srcIP": "10.0.8.0/24",
-                "next_hop": "10.0.4.0/24",
-                "link_performance": {
-                    "延时": "15ms",
-                    "丢包率": "1.18%",
-                    "带宽": "863Mbps"
-                }
+    "data": [
+        {
+            "deviceID": "1",
+            "link_performance": {
+                "延时": "74ms",
+                "丢包": "3.00%",
+                "带宽": "645Mbps"
             }
-        ],
-        "10.0.4.0/24": [
-            {
-                "srcIP": "10.0.4.0/24",
-                "next_hop": "10.0.3.0/24",
-                "link_performance": {
-                    "延时": "42ms",
-                    "丢包率": "2.97%",
-                    "带宽": "409Mbps"
-                }
+        },
+        {
+            "deviceID": "2",
+            "link_performance": {
+                "延时": "69ms",
+                "丢包": "0.34%",
+                "带宽": "71Mbps"
             }
-        ],
-        "10.0.3.0/24": [
-            {
-                "srcIP": "10.0.3.0/24",
-                "next_hop": "10.0.1.0/24",
-                "link_performance": {
-                    "延时": "91ms",
-                    "丢包率": "2.83%",
-                    "带宽": "286Mbps"
-                }
+        },
+        {
+            "deviceID": "3",
+            "link_performance": {
+                "延时": "41ms",
+                "丢包": "3.03%",
+                "带宽": "282Mbps"
             }
-        ],
-        "10.0.1.0/24": [
-            {
-                "srcIP": "10.0.1.0/24",
-                "next_hop": "10.0.9.0/24",
-                "link_performance": {
-                    "延时": "3ms",
-                    "丢包率": "2.22%",
-                    "带宽": "450Mbps"
-                }
+        },
+        {
+            "deviceID": "4",
+            "link_performance": {
+                "延时": "98ms",
+                "丢包": "2.25%",
+                "带宽": "71Mbps"
             }
-        ]
-    }
+        }
+    ]
 }
 ```
 获取全部节点主机信息接口：http://127.0.0.1:8000/controller/topoNode
@@ -149,30 +135,30 @@
 {
     "code": 200,
     "order": null,
-    "data": {
-        "10.0.8.0/24": {
-            "node": "10.0.8.0/24",
+    "data": [
+        {
+            "deviceID": "1",
             "node_performance": {
-                "cpu": "97.08%",
-                "内存": "39.75%",
-                "温度": "43°C"
+                "cpu": "62.72%",
+                "内存": "25.45%",
+                "温度": "26°C"
             }
         },
-        "10.0.4.0/24": {
-            "node": "10.0.4.0/24",
+        {
+            "deviceID": "2",
             "node_performance": {
-                "cpu": "55.32%",
-                "内存": "60.83%",
+                "cpu": "56.68%",
+                "内存": "12.27%",
+                "温度": "42°C"
+            }
+        },
+        {
+            "deviceID": "3",
+            "node_performance": {
+                "cpu": "10.38%",
+                "内存": "41.43%",
                 "温度": "21°C"
             }
-        },
-        "10.0.3.0/24": {
-            "node": "10.0.3.0/24",
-            "node_performance": {
-                "cpu": "77.69%",
-                "内存": "68.25%",
-                "温度": "58°C"
-            }
         }
-    }
+    ]
 }

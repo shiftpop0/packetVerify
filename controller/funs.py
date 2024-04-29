@@ -5,10 +5,16 @@ import ipaddress
 import random
 def is_valid_ip(ip_with_mask):
     try:
-        ip, mask = ip_with_mask.split('/')
-        ipaddress.ip_address(ip)
-        if not 0 <= int(mask) <= 32:
-            return False
+        if not ip_with_mask or ip_with_mask == '""':  #检查空的
+            return True
+        if '/' in ip_with_mask:
+            ip, mask = ip_with_mask.split('/')
+            ipaddress.ip_address(ip)  #验证IP 格式
+            if not 0 <= int(mask) <= 32:  # 掩码范围
+                return False
+
+        else:
+            ipaddress.ip_address(ip_with_mask)  #ip没有掩码格式
         return True
     except ValueError:
         return False
@@ -26,21 +32,28 @@ def analyze_routing_topology():
 
     # 分析下一跳
     connections = []
-    for entry in data.values():
-        for route in entry:
-            if all(is_valid_ip(route[field]) for field in ['srcIP', 'nextHop', 'dstIP']):
-                interface = f"In:{route['inInterfaceId']} Out:{route['outInterfaceId']}"
-                #connections.append((route['srcIP'], route['nextHop'], interface))
-                connections.append((route['srcIP'], route['dstIP'], route['nextHop'], interface))
+    for device_id, entries in data.items():
+        for route in entries:
+            if all(is_valid_ip(route[field]) for field in ['srcIP', 'dstIP', 'nextHop']):
+                connection = (device_id, route['srcIP'], route['dstIP'], route['nextHop'], route['inInterfaceId'], route['outInterfaceId'])
+                connections.append(connection)
             else:
                 print(f"Invalid IP format found and skipped: {route}")
 
-    # 建立连接关系
+    # 建立每个设备端口到端口的连接
     G = nx.DiGraph()
-    for srcIP,  dstIP, next_hop, interface in connections:
-        G.add_edge(srcIP, next_hop, label=interface) #用下一跳去建立连接关系
+    for deviceID, srcIP, dstIP, next_hop, inInterface, outInterface in connections:
+        src_label = f"{srcIP} {outInterface}" #源是出接口
+        dst_label = f"{next_hop} {inInterface}" #目的是入接口
+        if next_hop and next_hop != '""':
+            # 使用出端口和入端口作为边的标签
+            edge_label = f"{outInterface} -> {inInterface}"
+            G.add_edge(src_label, dst_label, label=edge_label)
 
+    # 布局
     pos = nx.spring_layout(G)
+
+    # 绘图
     nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=2000, font_size=10)
     edge_labels = nx.get_edge_attributes(G, 'label')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
@@ -56,37 +69,34 @@ def fetch_and_select_nodes():
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()['data']
-        node_keys = list(data.keys())
-        if len(node_keys) < 3:
-            return "Not enough nodes to select three adjacent.", None
-        # 随机选择三个相邻节点
-        # random_start = random.randint(0, len(node_keys) - 3)
-        # selected_nodes = node_keys[random_start:random_start + 3]
-        # 改成头三个节点，确保每次选择的节点一样
-        selected_nodes = node_keys[:3]
-        return data, selected_nodes
+        if len(data) < 3:
+            return data
+        else:
+            selected_nodes = data[:3]
+            return selected_nodes
+        # 先选择头三个节点，后面改成随机的
     except requests.RequestException as e:
         return f"Request Fail: {str(e)}", None
 
 # 转发表（目的ip/mask，出端口），转发表格式为{deviceId:[{dstIP,mask,outInterfaceId}]}
 def analyze_fib():
-    data, selected_nodes = fetch_and_select_nodes()
+    selected_nodes = fetch_and_select_nodes()
     fib = {}
-
     for node in selected_nodes:
-        entries = data[node]
-        fib[node] = [{'dstIP': entry['dstIP'].split('/')[0] +  '/' + entry['dstIP'].split('/')[1],
-                      'outInterfaceId': entry['interface'].split('Out:')[1]} for entry in entries]
+        fib[node['deviceId']] = [{'dstIP': node['dstIP'].split('/')[0] +  '/' + node['dstIP'].split('/')[1],
+                      'outInterface': node['outInterface']}]
     return fib
 
 #生成验证表, 验证表格式为 {deviceId:[{srcIP,mask,inInterfaceId}]}
 def analyze_vt():
-    data, selected_nodes = fetch_and_select_nodes()
+    selected_nodes = fetch_and_select_nodes()
     vt = {}
     for node in selected_nodes:
-        entries = data[node]
-        vt[node] = [{'srcIP': node.split('/')[0] +  '/' + node.split('/')[1],
-                     'inInterfaceId': entry['interface'].split('In:')[1].split(' ')[0]} for entry in entries]
+        vt[node['deviceId']] = [{'srcIP': node['srcIP'].split('/')[0] +  '/' + node['srcIP'].split('/')[1],
+                                'inInterface': node['inInterface']}]
+        # entries = data[node]
+        # vt[node] = [{'srcIP': node.split('/')[0] +  '/' + node.split('/')[1],
+        #              'inInterfaceId': entry['interface'].split('In:')[1].split(' ')[0]} for entry in entries]
     return vt
 
 #动态模拟每条链路的时延、丢包率、带宽
@@ -97,19 +107,29 @@ def analyze_link_performance():
         delay = random.randint(1, 100)  # 延迟
         packet_loss = random.uniform(0, 0.05)  # 丢包
         bandwidth = random.randint(10, 1000)  # 带宽
-        link_performance[connection] = {'延时': f"{delay}ms", '丢包率': f"{packet_loss * 100:.2f}%",
+        key = connection[0]
+        link_performance[key] = {'延时': f"{delay}ms", '丢包': f"{packet_loss * 100:.2f}%",
                                         '带宽': f"{bandwidth}Mbps"}
     return link_performance
 
 #动态模拟所有节点的CPU利用率、内存利用率、温度
 def analyze_node_performance():
-    _, selected_nodes = fetch_and_select_nodes()
+    selected_nodes = fetch_and_select_nodes()
+    if not selected_nodes:
+        return "Failed to fetch nodes or not enough nodes."
+
     node_performance = {}
     for node in selected_nodes:
-        cpu_utilization = random.uniform(0, 1)
-        memory_utilization = random.uniform(0, 1)
+        cpu_utilization = random.uniform(0, 75)
+        memory_utilization = random.uniform(0, 65)
         temperature = random.randint(20, 90)
-        node_performance[node] = {'cpu': f"{cpu_utilization * 100:.2f}%",
-                                  '内存': f"{memory_utilization * 100:.2f}%",
-                                  '温度': f"{temperature}°C"}
+        node_performance[node['deviceId']] = {
+            'cpu': f"{cpu_utilization:.2f}%",
+            '内存': f"{memory_utilization:.2f}%",
+            '温度': f"{temperature}°C"
+        }
     return node_performance
+
+
+if __name__ == '__main__':
+    print(analyze_fib())
