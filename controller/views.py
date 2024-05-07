@@ -25,6 +25,9 @@ def RIB(request):
             'inInterfaceId': r.inInterfaceId,
             'outInterfaceId': r.outInterfaceId,
         })
+        # 临时展示，控制3条路由表
+        if len(response)> 2:
+            break
     return JsonResponse(response)
 
 def genTopo(request):

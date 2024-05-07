@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="设备信息展示、验证状态切换&#10;控制器信息展示、路由表&#10;cpu折线图&#10;拓扑图">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/17aff7ed-9ec9-4055-bce3-769affb3cfab.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/17aff7ed-9ec9-4055-bce3-769affb3cfab.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/258efa18-8619-454c-979b-d007ad002fc3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/258efa18-8619-454c-979b-d007ad002fc3.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024_4_21_16_59__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024_4_21_16_59__Changes_.xml" afterDir="false" />
+    <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="deviceNum由3改成4">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/topo.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/topo.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,14 +99,14 @@
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="packetVerify.settings" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="D:\apps\anaconda3\envs\packetVerify\python.exe" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
       <option name="port" value="8000" />
-      <option name="host" value="" />
+      <option name="host" value="0.0.0.0" />
       <option name="additionalOptions" value="" />
       <option name="browserUrl" value="" />
       <option name="runTestServer" value="false" />
@@ -143,7 +141,8 @@
       <workItem from="1713946739789" duration="36863000" />
       <workItem from="1714234026428" duration="26657000" />
       <workItem from="1714290076349" duration="758000" />
-      <workItem from="1714291441880" duration="442000" />
+      <workItem from="1714291441880" duration="2713000" />
+      <workItem from="1714489695927" duration="3913000" />
     </task>
     <task id="LOCAL-00001" summary="尝试修复admin ui问题">
       <created>1713154020933</created>
@@ -201,7 +200,14 @@
       <option name="project" value="LOCAL" />
       <updated>1714290615774</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="deviceNum由3改成4">
+      <created>1714291909211</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1714291909211</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -227,7 +233,8 @@
     <MESSAGE value="将test文件名改成funs，以避免和django test混淆" />
     <MESSAGE value="add 设备管理信息展示 连接数据平面" />
     <MESSAGE value="设备信息展示、验证状态切换&#10;控制器信息展示、路由表&#10;cpu折线图&#10;拓扑图" />
-    <option name="LAST_COMMIT_MESSAGE" value="设备信息展示、验证状态切换&#10;控制器信息展示、路由表&#10;cpu折线图&#10;拓扑图" />
+    <MESSAGE value="deviceNum由3改成4" />
+    <option name="LAST_COMMIT_MESSAGE" value="deviceNum由3改成4" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
