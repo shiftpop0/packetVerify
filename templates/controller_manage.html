@@ -75,10 +75,6 @@
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                             <h4 class="modal-title" id="insertmyLargeModalLabel"><span >新增设备节点</span></h4> </div>
                         <div class="modal-body">
-<!--                            <div class="form-group">
-                                <label for="insert_lab_username" class="control-label">主管老师工号</label>
-                                <input type="number" class="form-control" id="insert_lab_username">
-                            </div>-->
                             <div class="form-group">
                                 <label for="insert_lab_name" class="control-label">节点名称(20字内)</label>
                                 <input type="text" class="form-control" id="insert_lab_name">
@@ -106,12 +102,58 @@
                 <!-- /.modal-dialog -->
             </div>
 
+            <!-- 添加路由表模态框 -->
+            <div id="addRoutingTableModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addRoutingTableLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="addRoutingTableLabel">添加路由表</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="routingTableDeviceId">
+                            <div class="form-group">
+                                <label for="sourcePrefix" class="control-label">源前缀(格式:)</label>
+                                <input type="text" class="form-control" id="sourcePrefix">
+                            </div>
+                            <div class="form-group">
+                                <label for="destinationPrefix" class="control-label">目的前缀(格式:)</label>
+                                <input type="text" class="form-control" id="destinationPrefix">
+                            </div>
+                            <div class="form-group">
+                                <label for="nextHop" class="control-label">下一跳</label>
+                                <input type="text" class="form-control" id="nextHop">
+                            </div>
+                            <div class="form-group">
+                                <label for="ingressInterface" class="control-label">入接口</label>
+                                <input type="text" class="form-control" id="ingressInterface">
+                            </div>
+                            <div class="form-group">
+                                <label for="egressInterface" class="control-label">出接口</label>
+                                <input type="text" class="form-control" id="egressInterface">
+                            </div>
+                            <button class="btn btn-success waves-effect waves-light" type="button" id="submitRoutingTable">
+                                <span class="btn-label">
+                                    <i class="fa fa-check"></i>
+                                </span>提交
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+             <!--没用到 -->
             <div id = "updatelabmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="updatemyLargeModalLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="updatemyLargeModalLabel"><span >编辑实验室</span></h4> </div>
+                            <h4 class="modal-title" id="updatemyLargeModalLabel"><span > 添加路由表 </span></h4> </div>
                         <div class="modal-body">
                             <input type="hidden" id="update_lab_id">
 <!--                            <div class="form-group">
@@ -483,12 +525,97 @@
 
     }
 
+    // 显示模态框的函数：每次点击按钮时，将相关的隐藏设备 ID 字段设置正确，并重置所有输入框
+    function showAddRoutingTableModal(button) {
+        // 从按钮 ID 中提取设备索引
+        var buttonId = $(button).attr("id");
+        var index = parseInt(buttonId.split("_")[1]);
+
+        // 将模态框中的隐藏字段设置为对应的设备 ID
+        var deviceId = externallabresponse.data[index].deviceId;
+        $("#routingTableDeviceId").val(deviceId);
+
+        // 清空之前的输入值
+        $("#sourcePrefix").val("");
+        $("#destinationPrefix").val("");
+        $("#nextHop").val("");
+        $("#ingressInterface").val("");
+        $("#egressInterface").val("");
+
+        // 使用 `modal('show')` 方法每次都显示模态框
+        $("#addRoutingTableModal").modal("show");
+    }
+
+    $("#submitRoutingTable").click(function () {
+        var deviceId = $("#routingTableDeviceId").val();
+        var sourcePrefix = $("#sourcePrefix").val();
+        var destinationPrefix = $("#destinationPrefix").val();
+        var nextHop = $("#nextHop").val();
+        var ingressInterface = $("#ingressInterface").val();
+        var egressInterface = $("#egressInterface").val();
+
+        // 进行表单验证（如有需要）
+
+        // 关闭模态框
+        $("#addRoutingTableModal").modal("hide");
+
+        // 显示加载指示器
+        $("#page-wrapper").busyLoad("show", {
+            text: "添加路由表中...",
+            animation: "fade",
+            background: "rgba(0, 0, 0, 0.86)",
+            spinner: "cube-grid"
+        });
+
+        // 发起AJAX请求提交路由表数据
+        $.ajax({
+            type: "POST",
+            url: "/routingTable/add",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({
+                deviceId: deviceId,
+                sourcePrefix: sourcePrefix,
+                destinationPrefix: destinationPrefix,
+                nextHop: nextHop,
+                ingressInterface: ingressInterface,
+                egressInterface: egressInterface
+            })
+        }).always(function () {
+            // 隐藏加载指示器
+            $("#page-wrapper").busyLoad("hide");
+        }).done(function (response) {
+            if (response.code === 200) {
+                swal({
+                    title: "路由表添加成功",
+                    text: response.message,
+                    type: "success",
+                    timer: 1000
+                });
+                location.reload();
+            } else {
+                swal({
+                    title: "错误",
+                    text: response.message,
+                    type: "error",
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).fail(function () {
+            swal({
+                title: "通信错误",
+                text: "请检查网络连接。",
+                type: "error",
+                confirmButtonText: "确定"
+            });
+        });
+    });
+
     //imparam=this
     function verifyset(inparam) {
-
-
         swal({
-            title: "确定删除实验室吗?",
+            title: "确定删除路由表项吗?",
             text: "删除后一切数据无法恢复!",
             type: "warning",
             showCancelButton: true,
@@ -560,13 +687,7 @@
                     confirmButtonText: "确定",
                 })
             })
-
-
-
         });
-
-
-
     }
 
     //加载RIB
@@ -630,19 +751,8 @@
                 }
 
 
-
-
-
                 for (var i = 0; i < Object.keys(response.data.devicePort).length; i++) {
-
-                    var maleimg = $("<img>").addClass("img-circle img-responsive").attr("src", "avatar/male.png")
-                    var femaleimg = $("<img>").addClass("img-circle img-responsive").attr("src", "avatar/female.png")
-
-                    var imgnode = maleimg;
-                    var issupernode = null;
                     console.log(response.data.devicePort[i])
-                    {#if(response.data[i].isSupervisor == 1)#}
-                    {#    issupernode = $("<span>").addClass("label label-info m-l-5").append("责任老师")#}
                     $("#"+divnameid).load("/ribHtml" , function () {})
 
                 }
@@ -1082,7 +1192,8 @@
                             ).append(
                                 $("<div>").addClass("tab-pane").attr("role","tabpanel").attr("id","action"+i).append(
                                     $("<div>").addClass("col-md-12").append(
-                                        $("<button>").addClass("btn btn-primary waves-effect waves-light m-r-20").attr("id","edit_lab_"+i).attr("type","button").attr("onClick","updatelab(this)").append(
+                                        $("<button>").addClass("btn btn-primary waves-effect waves-light m-r-20").attr("id","addRoutingTableButton_"+i).attr("type","button").attr("onClick","showAddRoutingTableModal(this)").append(
+                                       // $("<button>").addClass("btn btn-primary waves-effect waves-light m-r-20").attr("id","edit_lab_"+i).attr("type","button").attr("onClick","updatelab(this)").append(
                                             $("<span>").addClass("btn-label").append(
                                                 $("<i>").addClass("fa fa-plus")
                                             )
@@ -1159,6 +1270,7 @@
                     address:$("#update_lab_address").val(),
                     about:$("#update_lab_about").val(),
                 })
+
             }).always(function () {
                 //隐藏加载中遮罩
                 $("#page-wrapper").busyLoad("hide");
