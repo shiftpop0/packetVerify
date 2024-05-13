@@ -29,32 +29,36 @@
                         <div class="drop-title">这是你的通知</div>
                     </li>
 
-
                 </ul>
                 <!-- /.dropdown-messages -->
             </li>
 
-
         </ul>
         <ul class="nav navbar-top-links navbar-right pull-right">
             <li class="dropdown">
-                <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"> <img src="/static/plugins/images/users/varun.jpg" alt="user-img" width="36" class="img-circle"><b class="hidden-xs"><span id="topnavi_name_top">没有读取到姓名</span></b><span class="caret"></span> </a>
+                <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#">
+                    <img src="/static/plugins/images/users/varun.jpg" alt="user-img" width="36" class="img-circle">
+                    <span class="caret"></span>
+                </a>
                 <ul class="dropdown-menu dropdown-user animated flipInY">
                     <li>
                         <div class="dw-user-box">
-                            <div class="u-img"><img src="/static/plugins/images/users/varun.jpg" alt="user" /></div>
+                            <div class="u-img">
+                                <img src="/static/plugins/images/users/varun.jpg" alt="user" />
+                            </div>
                             <div class="u-text">
-                                <h4 ><span id="topnavi_name">没有读取到姓名</span></h4>
+                                <h4>管理员</h4> <!-- 固定显示管理员作为用户姓名 -->
                             </div>
                         </div>
                     </li>
-                    <li><a href="/login"><i class="fa fa-power-off"></i> 资料</a></li>
-                    <li><a href="/login"><i class="fa fa-power-off"></i> 注销</a></li>
+                    <li><a href="/profile"><i class="fa fa-user"></i> 资料</a></li>
+                    <li><a href="/logout"><i class="fa fa-power-off"></i> 注销</a></li>
                 </ul>
                 <!-- /.dropdown-user -->
             </li>
             <!-- /.dropdown -->
         </ul>
+
     </div>
     <!-- /.navbar-header -->
     <!-- /.navbar-top-links -->

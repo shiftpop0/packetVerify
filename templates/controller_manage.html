@@ -35,11 +35,6 @@
 </head>
 
 <body class="fix-header">
-
-
-<!-- ============================================================== -->
-<!-- Preloader -->
-<!-- ============================================================== -->
 <div class="preloader">
     <svg class="circular" viewBox="25 25 50 50">
         <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
@@ -49,90 +44,36 @@
 <!-- Wrapper -->
 <!-- ============================================================== -->
 <div id="wrapper">
-    <!-- ============================================================== -->
     <!-- Topbar header - style you can find in pages.scss -->
-    <!-- ============================================================== -->
     <div id="TopNavigation"></div>
-    <!-- End Top Navigation -->
-    <!-- ============================================================== -->
-    <!-- Left Sidebar - style you can find in sidebar.scss  -->
-    <!-- ============================================================== -->
-    <div id="LeftSlidebar"></div>
-    <!-- ============================================================== -->
-    <!-- End Left Sidebar -->
-    <!-- ============================================================== -->
 
-    <!-- ============================================================== -->
+    <!-- Left Sidebar - style you can find in sidebar.scss  -->
+    <div id="LeftSlidebar"></div>
+
     <!-- Page Content -->
-    <!-- ============================================================== -->
     <div id="page-wrapper">
         <div class="container-fluid">
-
-            <div id = "insertlabmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="insertmyLargeModalLabel" aria-hidden="true" style="display: none;">
+            <!-- 添加控制器 -->
+            <div id = "insertcontrollermodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="insertmyLargeModalLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="insertmyLargeModalLabel"><span >新增设备节点</span></h4> </div>
+                            <h4 class="modal-title" id="insertmyLargeModalLabel"><span >新增控制器</span></h4> </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="insert_lab_name" class="control-label">节点名称(20字内)</label>
-                                <input type="text" class="form-control" id="insert_lab_name">
+                                <label for="insert_ip_address" class="control-label">设备IP地址(示例:10.1.1.1)</label>
+                                <input type="text" class="form-control" id="insert_ip_address" title="请输入有效的IP地址，例如:10.1.1.1" >
                             </div>
                             <div class="form-group">
-                                <label for="insert_lab_address" class="control-label">地址(40字内)</label>
-                                <input type="text" class="form-control" id="insert_lab_address">
+                                <label for="insert_device_name" class="control-label">设备名称(20字内)</label>
+                                <input type="text" class="form-control" id="insert_controller_name" maxlength="20">
                             </div>
                             <div class="form-group">
-                                <label for="insert_lab_about" class="control-label">简介(255字内)</label>
-                                <textarea class="form-control" id="insert_lab_about"></textarea>
+                                <label for="insert_device_about" class="control-label">介绍(50字内)</label>
+                                <textarea class="form-control" id="insert_controller_about" maxlength="50"></textarea>
                             </div>
-                            <button class="btn btn-success waves-effect waves-light" type="button" id="insert_lab_button">
-                                    <span class="btn-label">
-                                        <i class="fa fa-check"></i>
-                                    </span>提交
-                            </button>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">关闭</button>
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-
-            <!-- 添加路由表模态框 -->
-            <div id="addRoutingTableModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addRoutingTableLabel" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="addRoutingTableLabel">添加路由表</h4>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" id="routingTableDeviceId">
-                            <div class="form-group">
-                                <label for="sourcePrefix" class="control-label">源前缀(格式:)</label>
-                                <input type="text" class="form-control" id="sourcePrefix">
-                            </div>
-                            <div class="form-group">
-                                <label for="destinationPrefix" class="control-label">目的前缀(格式:)</label>
-                                <input type="text" class="form-control" id="destinationPrefix">
-                            </div>
-                            <div class="form-group">
-                                <label for="nextHop" class="control-label">下一跳</label>
-                                <input type="text" class="form-control" id="nextHop">
-                            </div>
-                            <div class="form-group">
-                                <label for="ingressInterface" class="control-label">入接口</label>
-                                <input type="text" class="form-control" id="ingressInterface">
-                            </div>
-                            <div class="form-group">
-                                <label for="egressInterface" class="control-label">出接口</label>
-                                <input type="text" class="form-control" id="egressInterface">
-                            </div>
-                            <button class="btn btn-success waves-effect waves-light" type="button" id="submitRoutingTable">
+                            <button class="btn btn-success waves-effect waves-light" type="button" id="insert_controller_button">
                                 <span class="btn-label">
                                     <i class="fa fa-check"></i>
                                 </span>提交
@@ -147,35 +88,40 @@
                 <!-- /.modal-dialog -->
             </div>
 
-             <!--没用到 -->
-            <div id = "updatelabmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="updatemyLargeModalLabel" aria-hidden="true" style="display: none;">
+            <!-- 添加路由表模态框 -->
+            <div id="insertRIBmodal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addRoutingTableLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="updatemyLargeModalLabel"><span > 添加路由表 </span></h4> </div>
+                            <h4 class="modal-title" id="addRoutingTableLabel">添加路由表</h4>
+                        </div>
                         <div class="modal-body">
-                            <input type="hidden" id="update_lab_id">
-<!--                            <div class="form-group">
-                                <label for="update_lab_username" class="control-label">主管老师工号</label>
-                                <input type="number" class="form-control" id="update_lab_username" disabled>
-                            </div>-->
+                            <input type="hidden" id="routingTableDeviceId">
                             <div class="form-group">
-                                <label for="update_lab_name" class="control-label">实验室名称(20字内)</label>
-                                <input type="text" class="form-control" id="update_lab_name">
+                                <label for="sourcePrefix" class="control-label">源前缀(格式:10.0.8.1/24)</label>
+                                <input type="text" class="form-control" id="sourcePrefix">
                             </div>
                             <div class="form-group">
-                                <label for="update_lab_address" class="control-label">地址(40字内)</label>
-                                <input type="text" class="form-control" id="update_lab_address">
+                                <label for="destinationPrefix" class="control-label">目的前缀(格式:10.0.4.1/24)</label>
+                                <input type="text" class="form-control" id="destinationPrefix">
                             </div>
                             <div class="form-group">
-                                <label for="update_lab_about" class="control-label">简介(255字内)</label>
-                                <textarea class="form-control" id="update_lab_about"></textarea>
+                                <label for="nextHop" class="control-label">下一跳</label>
+                                <input type="text" class="form-control" id="nextHop">
                             </div>
-                            <button class="btn btn-success waves-effect waves-light" type="button" id="update_lab_button">
-                                    <span class="btn-label">
-                                        <i class="fa fa-refresh fa-spin"></i>
-                                    </span>更新
+                            <div class="form-group">
+                                <label for="ingressInterface" class="control-label">入接口</label>
+                                <input type="text" class="form-control" id="ingressInterface">
+                            </div>
+                            <div class="form-group">
+                                <label for="egressInterface" class="control-label">出接口</label>
+                                <input type="text" class="form-control" id="egressInterface">
+                            </div>
+                            <button class="btn btn-success waves-effect waves-light" type="button" id="insert_RIB_button">
+                                <span class="btn-label">
+                                    <i class="fa fa-check"></i>
+                                </span>提交
                             </button>
                         </div>
                         <div class="modal-footer">
@@ -186,7 +132,6 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-
 
             <div id = "insertteachermodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="insertmyLargeModalLabelTeacher" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg">
@@ -317,10 +262,15 @@
                     <h4 class="page-title">源地址验证控制器</h4>
                 </div>
                 <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-                    <button class="btn btn-success waves-effect waves-light " type="button" id="new_lab">
+                    <button class="btn btn-success waves-effect waves-light " type="button" id="new_controller">
                                     <span class="btn-label">
                                         <i class="fa fa-plus"></i>
                                     </span>新增控制器
+                    </button>
+                    <button class="btn btn-info waves-effect waves-light" type="button" id="refresh_controller">
+                                <span class="btn-label">
+                                    <i class="fa fa-refresh"></i>
+                                </span> 重新加载控制器
                     </button>
                     <button class="right-side-toggle waves-effect waves-light btn-info btn-circle pull-right m-l-20"><i class="ti-settings text-white"></i></button>
 
@@ -360,18 +310,10 @@
                     </div>
                 </div>
             </div>
-            <!-- ============================================================== -->
-            <!-- End Right sidebar -->
-            <!-- ============================================================== -->
         </div>
-        <!-- /.container-fluid -->
-
     </div>
-    <!-- ============================================================== -->
-    <!-- End Page Content -->
-    <!-- ============================================================== -->
 </div>
-<!-- /#wrapper -->
+
 <!-- jQuery -->
 <script src="/static/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 <script>
@@ -384,52 +326,15 @@
             $.getScript("{% static '/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js' %}",function () {
                 <!-- Custom Theme JavaScript -->
                 $.getScript("{% static '/js/custom.min.js' %}");
-
-                //获取各个项目的数量
-                /*                $.ajax({
-                                    type : "POST",
-                                    url : "/admin/getNeedCheck",
-                                    data : "",
-                                    dataType : "json",
-                                    contentType: "application/json",
-                                }).done(function (res) {
-                                    //左侧菜单栏数量
-                                    $("#totalneedcheckspan").text(res.data.mlxysspneedcheck.itemsCounts+res.data.wgxwjsgneedcheck.itemsCounts+res.data.wwgdtjyneedcheck.itemsCounts+res.data.zyqcneedcheck.itemsCounts);
-                                    $("#mlxysspneedcheckspan").text(res.data.mlxysspneedcheck.itemsCounts);
-                                    $("#wgxwjsgneedcheckspan").text(res.data.wgxwjsgneedcheck.itemsCounts);
-                                    $("#wwgdtjyneedcheckspan").text(res.data.wwgdtjyneedcheck.itemsCounts);
-                                    $("#zyqcneedcheckspan").text(res.data.zyqcneedcheck.itemsCounts);
-                                }).fail(function () {
-                                });*/
-
-
             });//<!-- Menu Plugin JavaScript -->
-
         });
         $("#TopNavigation").load("/static/html/TopNavigationStudent.html" , function () {
-
-
-
-            // $.ajax({
-            //     type : "GET",
-            //     url : "/admin/queryCurrentAdmin",
-            //     data : "",
-            //     dataType : "json",
-            //     contentType: "application/json",
-            // }).done(function (res) {
-            //     $("#adminname1").text(res.data.adminuser.name);
-            //     $("#adminname2").text(res.data.adminuser.name);
-            //     $("#adminusername").text(res.data.adminuser.username);
-            // }).fail(function () {
-            // });
         });
-
-
     });
 </script>
+
 <!-- Bootstrap Core JavaScript -->
 <script src=" {% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-
 <!--slimscroll JavaScript -->
 <script src="{% static '/js/jquery.slimscroll.js' %}"></script>
 <!--Wave Effects -->
@@ -448,14 +353,10 @@
 
     //点击老师之后显示的模态框，用来更新和删除
     function renderteacher(inparam) {
-        //sample 0_0
-
         var toupdateid = $(inparam).attr("id")
         var teacherindex =  parseInt(toupdateid.substring(toupdateid.lastIndexOf("_")+1)) //获取到实际的index
         var labindex = parseInt(toupdateid.substring(0,toupdateid.indexOf("_")))
-
         var teacheridindatabase = externallabresponse.data[labindex].teachers.data[teacherindex].id
-
 
         $("#update_teacher_name").val(externallabresponse.data[labindex].teachers.data[teacherindex].name)
         $("#update_teacher_super").val(externallabresponse.data[labindex].teachers.data[teacherindex].isSupervisor)
@@ -465,7 +366,6 @@
         $("#update_teacher_sex").val(externallabresponse.data[labindex].teachers.data[teacherindex].sex)
         $("#update_teacher_mail").val(externallabresponse.data[labindex].teachers.data[teacherindex].mail)
 
-
         //用来提交数据库的主键
         $("#teacherhiddenlabidforteacherupdate").val(teacheridindatabase)
 
@@ -474,8 +374,6 @@
 
         $("#updateteachermodal").modal()
     }
-
-
 
     //addteachertolab, 为实验室新增老师
     function addteachertolab(inparam) {
@@ -492,37 +390,23 @@
         $("#insert_teacher_about").val("")
         $("#insert_teacher_sex").val("男")
         $("#insert_teacher_mail").val("")
-
         $("#teacherhiddenlabid").val(idindatabase)
-
         $("#hiddenlabindextorefresh").val(arrayindex)
-
         $("#insertteachermodal").modal()
 
     }
 
-
     //imparam=this
     function updatelab(inparam) {
-        //sample：edit_lab_0
         var toupdateid = $(inparam).attr("id")
         var arrayindex =  parseInt(toupdateid.substring(toupdateid.lastIndexOf("_")+1)) //获取到实际的index
-
-
         var idindatabase = externallabresponse.data[arrayindex].id;
 
-
         $("#update_lab_id").val(idindatabase)
-
-
         $("#update_lab_name").val(externallabresponse.data[arrayindex].name)
         $("#update_lab_address").val(externallabresponse.data[arrayindex].address)
         $("#update_lab_about").val(externallabresponse.data[arrayindex].about)
-
-
-
         $("#updatelabmodal").modal();
-
     }
 
     // 显示模态框的函数：每次点击按钮时，将相关的隐藏设备 ID 字段设置正确，并重置所有输入框
@@ -530,7 +414,6 @@
         // 从按钮 ID 中提取设备索引
         var buttonId = $(button).attr("id");
         var index = parseInt(buttonId.split("_")[1]);
-
         // 将模态框中的隐藏字段设置为对应的设备 ID
         var deviceId = externallabresponse.data[index].deviceId;
         $("#routingTableDeviceId").val(deviceId);
@@ -553,9 +436,6 @@
         var nextHop = $("#nextHop").val();
         var ingressInterface = $("#ingressInterface").val();
         var egressInterface = $("#egressInterface").val();
-
-        // 进行表单验证（如有需要）
-
         // 关闭模态框
         $("#addRoutingTableModal").modal("hide");
 
@@ -612,7 +492,7 @@
         });
     });
 
-    //imparam=this
+    //删除路由表项 尚未接入接口(需先测试接口去删除根据ID把)
     function verifyset(inparam) {
         swal({
             title: "确定删除路由表项吗?",
@@ -624,17 +504,10 @@
             cancelButtonText:"取消",
             closeOnConfirm: false
         }, function(){
-
-            //do delete
-
             //sample:delete_lab_0
             var todeleteid = $(inparam).attr("id")
             var arrayindex =  parseInt(todeleteid.substring(todeleteid.lastIndexOf("_")+1)) //获取到实际的index
-
-
             var idindatabase = externallabresponse.data[arrayindex].id;
-
-
 
             var maskid = "divwrapper_"+arrayindex;
 
@@ -689,75 +562,32 @@
             })
         });
     }
+    //用来展示路由表信息的
+    function loadRIB(inparam) {
+        var toloadid = $(inparam).attr("id");
+        var arrayindex = parseInt(toloadid.substring(toloadid.lastIndexOf("_") + 1));
+        var divnameid = "toinsertteacher_" + arrayindex;
+        var masknameid = "divwrapper_" + arrayindex;
 
-    //加载RIB
-    function loadRIB(inparam){
-        //inparam sample：laba_0
-
-        var toloadid = $(inparam).attr("id")
-
-        var arrayindex =  parseInt(toloadid.substring(toloadid.lastIndexOf("_")+1)) //获取到实际的index
-
-        var idindatabase = externallabresponse.data[arrayindex].id; //这就是实验室的id
-
-        //根据实验室id获取该实验室的老师
-
-        //sample：toinsertteacher_0
-
-        var divnameid = "toinsertteacher_"+arrayindex
-
-
-        //改成遮罩整个白块
-        var masknameid = "divwrapper_"+arrayindex;
-
-
-        // 显示加载中遮罩
-        $("#"+masknameid).busyLoad("show", {
+        $("#" + masknameid).busyLoad("show", {
             text: "获取中 ...",
             animation: "fade",
             background: "rgba(0, 0, 0, 0.86)",
             spinner: "cube-grid"
         });
 
-        //发送请求
         $.ajax({
             type: "POST",
-            url: "/devices/getPort",
+            url: "/controller/genTopo",
             dataType: "json",
             contentType: "application/json",
-            data: JSON.stringify({
-                {#deviceId:idindatabase#}
-            })
+            data: JSON.stringify({})
         }).always(function () {
-            //隐藏加载中遮罩
-            $("#"+masknameid).busyLoad("hide");
-
+            $("#" + masknameid).busyLoad("hide");
         }).done(function (response) {
-
             if (response.code === 200) {
-
-                {#if(undefined ===externallabresponse.data[arrayindex].teachers)#}
-                {#    externallabresponse.data[arrayindex].newParam ='teachers';#}
-
-                externallabresponse.data[arrayindex].teachers = response
-
-                $("#"+divnameid).empty()
-
-                if (response.data == null || response.data.length == 0) {
-                    $("#"+divnameid).append(
-                        "没有端口"
-                    )
-                    return
-                }
-
-
-                for (var i = 0; i < Object.keys(response.data.devicePort).length; i++) {
-                    console.log(response.data.devicePort[i])
-                    $("#"+divnameid).load("/ribHtml" , function () {})
-
-                }
-
-
+                var htmlContent = buildTableHTML(response.data);
+                $("#" + divnameid).empty().append(htmlContent);
             } else {
                 swal({
                     title: "获取端口信息失败",
@@ -765,7 +595,7 @@
                     type: "error",
                     timer: 1000,
                     showConfirmButton: false
-                })
+                });
             }
         }).fail(function () {
             swal({
@@ -774,18 +604,146 @@
                 type: "error",
                 showConfirmButton: true,
                 confirmButtonText: "确定",
-            })
-        })
+            });
+        });
+    }
 
+    function buildTableHTML(data) {
+        var table = '<table class="table">';
+        table += '<thead>';
+        table += '  <tr class="table-info">';
+        table += '    <th scope="col">设备ID</th>';
+        table += '    <th scope="col">源前缀</th>';
+        table += '    <th scope="col">目的前缀</th>';
+        table += '    <th scope="col">下一跳</th>';
+        table += '    <th scope="col">入接口</th>';
+        table += '    <th scope="col">出接口</th>';
+        table += '  </tr>';
+        table += '</thead>';
+        table += '<tbody>';
+
+        data.forEach(function(port, idx) {
+            table += '<tr class="table-light">';
+            table += `  <td>${port.deviceId}</td>`;
+            table += `  <td>${port.srcIP}</td>`;
+            table += `  <td>${port.dstIP}</td>`;
+            table += `  <td>${port.next_hop}</td>`;
+            table += `  <td>${port.inInterface}</td>`;
+            table += `  <td>${port.outInterface}</td>`;
+            table += '</tr>';
+        });
+
+        table += '</tbody>';
+        table += '</table>';
+
+        return table;
+    }
+
+
+    //用于添加路由表 需加入接口
+    function newRIB(inparam) {
+        // 清空所有输入框，每次打开模态框时执行
+        $("#sourcePrefix").val("");
+        $("#destinationPrefix").val("");
+        $("#nextHop").val("");
+        $("#ingressInterface").val("");
+        $("#egressInterface").val("");
+
+        $("#insertRIBmodal").modal(); // 显示模态窗口
     }
 
     $(document).ready(function () {
+        // 刷新页面
+        $("#refresh_controller").click(function() {
+            location.reload();  // 刷新当前页面
+        });
+
+        //新增控制器节点
+        $("#new_controller").click(function () {
+            $("#insert_ip_address").val("")
+            $("#insert_controller_name").val("")
+            $("#insert_controller_about").val("")
+
+            $("#insertcontrollermodal").modal()  //这里有bug, 打开会导致其他按钮失效
+        })
+
+        // 新增控制器 ---不确定先模拟(后续功能需要更换成接口)
+        $("#insert_controller_button").click(function () {
+            var ipAddress = document.getElementById("insert_ip_address").value;
+            var deviceName = document.getElementById("insert_controller_name").value;
+            var deviceAbout = document.getElementById("insert_controller_about").value;
+
+            var ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?:\/[0-9]{1,2})?$/;
+            if (!ipRegex.test(ipAddress)) {
+                alert("请输入有效的IP地址，例如：10.1.1.1/24");
+                return false;
+            }
+            if (deviceName.length > 20) {
+                alert("设备名称不能超过20字");
+                return false;
+            }
+            if (deviceAbout.length > 50) {
+                alert("介绍不能超过50字");
+                return false;
+            }
+            //使用静态
+            swal({
+                title: "提交成功",
+                text: "您的设备信息已更新",
+                icon: "success",
+                button: false, // 修改此处以确保显示“OK”按钮
+                timer: 2000
+            })
+            $("#insertcontrollermodal").modal('hide');  // 关闭模态窗口
+        })
+
+        $("#insert_RIB_button").click(function() {
+            var srcIP = $("#sourcePrefix").val();
+            var dstIP = $("#destinationPrefix").val();
+            var nextHop = $("#nextHop").val();
+            var ingressInterface = $("#ingressInterface").val();
+            var outgressInterface = $("#egressInterface").val();
+
+            var ipWithMaskRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?:\/[0-9]{1,2})?$/;
+            var ipOnlyRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+
+            // 验证源IP和目的IP（允许带子网掩码）
+            if (!ipWithMaskRegex.test(srcIP)) {
+                alert("请输入有效的源IP地址，例如：10.0.8.1/24");
+                return false;
+            }
+
+            if (!ipWithMaskRegex.test(dstIP)) {
+                alert("请输入有效的目的IP地址，例如：10.0.8.1/24");
+                return false;
+            }
+
+            // 验证nextHop IP（仅IP地址，不包括子网掩码）
+            if (!ipOnlyRegex.test(nextHop)) {
+                alert("请输入有效的下一跳IP地址，例如：10.0.8.1");
+                return false;
+            }
+
+            // 验证ingressInterface和outgressInterface是否为正整数
+            if (!/^\d+$/.test(ingressInterface) || !/^\d+$/.test(outgressInterface)) {
+                alert("接口值必须为正整数");
+                return false;
+            }
+
+            swal({
+                title: "提交成功",
+                text: "您的设备信息已更新",
+                icon: "success",
+                button: "OK",
+                timer: 2000
+            });
+
+            $("#insertRIBmodal").modal('hide');  // 关闭模态窗口
+        });
+
 
         //从实验室删除老师
         $("#delete_teacher_button").click(function () {
-
-
-
             swal({
                 title: "确定删除老师吗?",
                 text: "删除后无法恢复!",
@@ -796,13 +754,10 @@
                 cancelButtonText:"取消",
                 closeOnConfirm: false
             }, function(){
-
                 var teachidtodelete = $("#teacherhiddenlabidforteacherupdate").val()
-
                 var tomaskdivid = "divwrapper_" + $("#hiddenlabindextorefreshforteacherupdate").val()
 
                 $("#updateteachermodal").modal("hide")
-
                 // 显示加载中遮罩
                 $("#"+tomaskdivid).busyLoad("show", {
                     text: "删除老师中 ...",
@@ -856,21 +811,12 @@
                     })
                 })
             })
-
-
-
-
-
-
         })
 
         //更新老师信息
         $("#update_teacher_button").click(function () {
-
             var teachidtoupdate = $("#teacherhiddenlabidforteacherupdate").val()
-
             var tomaskdivid = "divwrapper_" + $("#hiddenlabindextorefreshforteacherupdate").val()
-
             $("#updateteachermodal").modal("hide")
 
             // 显示加载中遮罩
@@ -901,7 +847,6 @@
                 $("#"+tomaskdivid).busyLoad("hide");
 
             }).done(function (response) {
-
                 if (undefined === response.code) {
                     swal({
                         title: "更新老师成功",
@@ -909,7 +854,6 @@
                         type: "success",
                         timer: 1000,
                     })
-
                     //重新加载这个实验室的老师
                     $("#"+"laba_"+$("#hiddenlabindextorefreshforteacherupdate").val()).click()
 
@@ -934,16 +878,10 @@
             })
         })
 
-
         //提交新的老师
         $("#insert_teacher_button").click(function () {
-
             $("#insertteachermodal").modal("hide")
-
             var tomaskdivid = "divwrapper_"+$("#hiddenlabindextorefresh").val()
-
-
-
             // 显示加载中遮罩
             $("#"+tomaskdivid).busyLoad("show", {
                 text: "增加老师中 ...",
@@ -972,7 +910,6 @@
                 $("#"+tomaskdivid).busyLoad("hide");
 
             }).done(function (response) {
-
                 if (undefined === response.code) {
                     swal({
                         title: "添加老师成功",
@@ -1006,11 +943,8 @@
 
         })
 
-
         //打开新增实验室
         $("#new_lab").click(function () {
-
-/*            $("#insert_lab_username").val("")*/
             $("#insert_lab_name").val("")
             $("#insert_lab_address").val("")
             $("#insert_lab_about").val("")
@@ -1020,9 +954,7 @@
 
         //新增实验室
         $("#insert_lab_button").click(function () {
-
             $("#insertlabmodal").modal("hide")
-
             //新增
             // 显示加载中遮罩
             $("#page-wrapper").busyLoad("show", {
@@ -1048,7 +980,6 @@
                 $("#page-wrapper").busyLoad("hide");
 
             }).done(function (response) {
-
                 if (undefined === response.code) {
                     swal({
                         title: "添加实验室成功",
@@ -1079,9 +1010,6 @@
             })
         })
 
-
-
-
         //打开就加载所有实验室的列表
         // 显示加载中遮罩
         $("#page-wrapper").busyLoad("show", {
@@ -1104,7 +1032,6 @@
         }).done(function (response) {
 
             if (response.code === 200) {
-
                 externallabresponse = response
                 if (response.data == null || response.data.length == 0) {
                     $("#rowtoinsertlab").append(
@@ -1112,14 +1039,10 @@
                     )
                     return
                 }
-
+                console.log(response.data)
                 for (var i = 0; i < response.data.length; i++) {
-
                     $("#rowtoinsertlab").append(
-
                         $("<div>").addClass("col-lg-12 col-sm-12 col-xs-12").append(
-
-
                         $("<div>").addClass("white-box").attr("id","divwrapper_"+i).append(
                             $("<h3>").addClass("box-title m-b-20").append(
                                 "控制器ID：" + response.data[i].deviceId
@@ -1192,8 +1115,8 @@
                             ).append(
                                 $("<div>").addClass("tab-pane").attr("role","tabpanel").attr("id","action"+i).append(
                                     $("<div>").addClass("col-md-12").append(
-                                        $("<button>").addClass("btn btn-primary waves-effect waves-light m-r-20").attr("id","addRoutingTableButton_"+i).attr("type","button").attr("onClick","showAddRoutingTableModal(this)").append(
-                                       // $("<button>").addClass("btn btn-primary waves-effect waves-light m-r-20").attr("id","edit_lab_"+i).attr("type","button").attr("onClick","updatelab(this)").append(
+                                       // $("<button>").addClass("btn btn-primary waves-effect waves-light m-r-20").attr("id","addRoutingTableButton_"+i).attr("type","button").attr("onClick","showAddRoutingTableModal(this)").append(
+                                        $("<button>").addClass("btn btn-primary waves-effect waves-light m-r-20").attr("id","edit_lab_"+i).attr("type","button").attr("onClick","newRIB(this)").append(
                                             $("<span>").addClass("btn-label").append(
                                                 $("<i>").addClass("fa fa-plus")
                                             )
@@ -1228,7 +1151,6 @@
                     )
 
                 }
-
 
             } else {
                 swal({

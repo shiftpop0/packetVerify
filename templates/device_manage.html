@@ -216,15 +216,6 @@
     var externallabresponse;
     var verify_mode=false;
 
-    //刷新页面
-    $(document).ready(function() {
-        // 绑定点击事件到刷新按钮
-        $("#refresh_devices").click(function() {
-            location.reload();  // 刷新当前页面
-        });
-    });
-
-
     //编辑表大小 --> 后续更改成结构
     function tablesize(inparam){
         $("#updatetablesize").modal(); //打开模态窗口
@@ -372,7 +363,6 @@
                     $("#" + divnameid).append("没有端口");
                     return;
                 }
-
                 // 遍历并显示每个端口的详细信息
                 $.each(response.data.devicePort, function(index, port) {
                     $("#" + divnameid).append(
@@ -418,6 +408,11 @@
     }
 
     $(document).ready(function () {
+        // 刷新当前页面
+        $("#refresh_devices").click(function() {
+            location.reload();
+        });
+
         //新增设备节点
         $("#new_device").click(function () {
             $("#insert_ip_address").val("")
