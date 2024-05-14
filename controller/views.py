@@ -123,6 +123,10 @@ def topoNode(request):
         return HttpResponse(f"{type(e).__name__} {str(e)}", status=500)
 
 def showController(request):
+    rib_count = RIB_Model.objects.count()
+    device_count = RIB_Model.objects.values('deviceId').distinct().count()
+    path_num = 1
+    deviceID = 1 #控制器只有一个只能先这一个
     rib = RIB_Model.objects.all()
-    response = [{'ribLen': len(rib), 'pathNum': 1, 'deviceNum': 4}]
+    response = [{'deviceId':deviceID, 'ribLen': rib_count, 'pathNum': path_num, 'deviceNum': device_count}]
     return JsonResponse(response, safe=False)
