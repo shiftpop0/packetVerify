@@ -13,4 +13,5 @@ urlpatterns = [
     path("topoNode", topoNode), #拓扑节点（主机）信息
     path("showController", showController), #显示控制器信息"
     path('delete_rib', delete_rib_entries), #删除路由表
+    path("update_rib", update_rib_entries), #更新路由表
 ]

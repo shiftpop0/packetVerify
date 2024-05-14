@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -140,8 +142,41 @@ def delete_rib_entries(request):
     device_id = request.GET.get('device_id') # 注意是从Get请求中提取device_id
     if not device_id:
         return JsonResponse({'status': 'error', 'message': 'Device ID is required'}, status=400)
-    count, _ = RIB_Model.objects.filter(deviceId_id=device_id).delete()
+    RIB_Model.objects.filter(deviceId_id=device_id).delete()
     return JsonResponse({
-        'status': 'success',
-        'message': f'Deleted {count} entries'
+        'status': 'success'
     })
+
+#post请求修改RIB表项
+@require_http_methods(["POST"])
+def update_rib_entries(request):
+    device_id = request.GET.get('device_id')
+    if not device_id:
+        return JsonResponse({'status': 'error', 'message': 'Device ID is required'}, status=400)
+    try:
+        data = json.loads(request.body)
+        for entry in data:
+            srcIP = entry.get('srcIP')
+            dstIP = entry.get('dstIP')
+            nextHop = entry.get('nextHop')
+            inInterfaceId = entry.get('inInterfaceId')
+            outInterfaceId = entry.get('outInterfaceId')
+            if not all([srcIP, dstIP, nextHop, inInterfaceId, outInterfaceId]):
+                return JsonResponse({'status': 'error', 'message': 'Missing required fields'}, status=400)
+
+            # 使用update_or_create来更新或创建记录
+            RIB_Model.objects.update_or_create(
+                deviceId_id=device_id,
+                srcIP=srcIP,
+                dstIP=dstIP,
+                defaults={
+                    'nextHop': nextHop,
+                    'inInterfaceId': inInterfaceId,
+                    'outInterfaceId': outInterfaceId
+                }
+            )
+        return JsonResponse({
+            'status': 'success',
+        })
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
