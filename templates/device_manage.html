@@ -136,7 +136,6 @@
             </div>
                 {% verbatim %}
             <div id="app" class="row" >
-
                 <div class="col-lg-12 col-sm-12 col-xs-12" v-for="(v, index) of devices">
                     <div class="white-box" id="divwrapper_0" style="position: relative;">
                         <div style="display: flex">
@@ -177,8 +176,6 @@
                               </tbody>
                             </table>
                         </div>
-
-
                     </div>
                     </div>
                 </div>
@@ -186,7 +183,6 @@
 
                 {% endverbatim %}
             <div class="row" id="rowtoinsertlab">
-
 
                 <!--<div class="col-lg-6 col-sm-6 col-xs-12" id="divwrapper_index">
                     <div class="white-box">
@@ -313,169 +309,156 @@
 <script src="/static/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="https://unpkg.com/vue@3"></script>
 <script type="module">
+    const { createApp, ref } = Vue;
 
-    const { createApp, ref } = Vue
-      createApp({
-        setup() {
-            let devices = ref([])
-            let ports = ref([])
-          return {
-              devices: devices,
-              ports: ports,
-              verifyset(deviceIndex) {
-                  let verifyMode = devices.value[deviceIndex].deviceInfo.verifyMode;
-        //console.log(verify_mode);
-        swal({
-            title: "确定切换验证状态吗?",
-            text: `当前验证开关状态：`+(verifyMode === true ? "开" : "关"),
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: (verifyMode === true ? "关闭" : "开启"),
-            cancelButtonText:"取消",
-            closeOnConfirm: false
-        }, function(){
+    createApp({
+      setup() {
+        let devices = ref([]);
+        let ports = ref([]);
 
-            var arrayindex =  deviceIndex //获取到实际的index
-            var idindatabase = devices.value[deviceIndex].deviceId;
-            var maskid = "divwrapper_"+arrayindex;
+        return {
+          devices,
+          ports,
+          verifyset(deviceIndex) {
+            let verifyMode = devices.value[deviceIndex].deviceInfo.verifyMode;
 
-            $("#"+maskid).busyLoad("show", {
+            swal({
+              title: "确定切换验证状态吗?",
+              text: `当前验证开关状态：` + (verifyMode ? "开" : "关"),
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: verifyMode ? "关闭" : "开启",
+              cancelButtonText: "取消",
+              closeOnConfirm: false
+            }, function() {
+              var arrayindex = deviceIndex; // 获取到实际的index
+              var idindatabase = devices.value[deviceIndex].deviceId;
+              var maskid = "divwrapper_" + arrayindex;
+
+              $("#" + maskid).busyLoad("show", {
                 text: "切换中 ...",
                 animation: "fade",
                 background: "rgba(0, 0, 0, 0.86)",
                 spinner: "cube-grid"
-            });
+              });
 
-            //发送请求
-            $.ajax({
+              // 发送请求
+              $.ajax({
                 type: "POST",
                 url: "/devices/verifySet",
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify({
-                    id:idindatabase
+                  id: idindatabase
                 })
-            }).always(function () {
-                //隐藏加载中遮罩
+              }).always(function() {
                 $("#"+maskid).busyLoad("hide");
-
-            }).done(function (response) {
-
+              }).done(function(response) {
                 if (response.code === 200) {
-                    swal({
-                        title: "切换成功",
-                        text: response.message,
-                        type: "success",
-                        timer: 1000,
-                    })
-                    verify_mode = response.data;
-                    devices.value[deviceIndex].deviceInfo.verifyMode = !verifyMode
-                }else {
-                    swal({
-                        title: "切换失败",
-                        text: response.message,
-                        type: "error",
-                        timer: 1000,
-                        showConfirmButton: false
-                    })
-                }
-
-            }).fail(function () {
-                swal({
-                    title: "通信失败",
-                    text: "请检查网络",
-                    type: "error",
-                    showConfirmButton: true,
-                    confirmButtonText: "确定",
-                })
-            })
-        });
-    }
-
-          }
-        },
-        mounted() {
-            //发送请求
-            var that = this
-        $.ajax({
-            type: "POST",
-            url: "/devices/showDevice",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({})
-        }).always(function () {
-            //隐藏加载中遮罩
-            $("#page-wrapper").busyLoad("hide");
-
-        }).done(function (response) {
-            if (response.code === 200) {
-                externallabresponse = response
-                if (response.data == null || response.data.length == 0) {
-                    $("#rowtoinsertlab").append(
-                        "没有设备"
-                    )
-                    return
-                }
-                 that.devices = response.data
-            } else {
-                swal({
-                    title: "获取设备节点失败",
+                  swal({
+                    title: "切换成功",
+                    text: response.message,
+                    type: "success",
+                    timer: 1000,
+                  });
+                  devices.value[deviceIndex].deviceInfo.verifyMode = !verifyMode;
+                } else {
+                  swal({
+                    title: "切换失败",
                     text: response.message,
                     type: "error",
                     timer: 1000,
                     showConfirmButton: false
-                })
-            }
-        }).fail(function () {
-            swal({
-                title: "通信失败",
-                text: "请检查网络",
-                type: "error",
-                showConfirmButton: true,
-                confirmButtonText: "确定",
-            })
-        })
-            // 发送请求
-            $.ajax({
-                type: "POST",
-                url: "/devices/getPort",
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify({})  // 不包含额外参数
-            }).done(function (response) {
-                if (response.code === 200) {
-
-                    if (!response.data || response.data.devicePort.length === 0) {
-                        $("#" + divnameid).append("没有端口");
-                        return;
-                    }
-                    that.ports = response.data.devicePort
-                } else {
-                    swal({
-                        title: "获取端口信息失败",
-                        text: response.message,
-                        type: "error",
-                        timer: 1000,
-                        showConfirmButton: false
-                    });
+                  });
                 }
-            }).fail(function () {
+              }).fail(function() {
                 swal({
-                    title: "通信失败",
-                    text: "请检查网络",
-                    type: "error",
-                    showConfirmButton: true,
-                    confirmButtonText: "确定",
+                  title: "通信失败",
+                  text: "请检查网络",
+                  type: "error",
+                  showConfirmButton: true,
+                  confirmButtonText: "确定",
                 });
+              });
             });
-        }
-      }).mount('#app')
+          }
+        };
+      },
+      mounted() {
+        var that = this;
+        // 获取设备列表
+        $.ajax({
+          type: "POST",
+          url: "/devices/showDevice",
+          dataType: "json",
+          contentType: "application/json",
+          data: JSON.stringify({})
+        }).always(function() {
+          $("#page-wrapper").busyLoad("hide");
+        }).done(function(response) {
+          if (response.code === 200) {
+            if (!response.data || response.data.length === 0) {
+              $("#rowtoinsertlab").append("没有设备");
+              return;
+            }
+            that.devices = response.data;
+          } else {
+            swal({
+              title: "获取设备节点失败",
+              text: response.message,
+              type: "error",
+              timer: 1000,
+              showConfirmButton: false
+            });
+          }
+        }).fail(function() {
+          swal({
+            title: "通信失败",
+            text: "请检查网络",
+            type: "error",
+            showConfirmButton: true,
+            confirmButtonText: "确定",
+          });
+        });
 
+        // 获取端口信息
+        $.ajax({
+          type: "POST",
+          url: "/devices/getPort",
+          dataType: "json",
+          contentType: "application/json",
+          data: JSON.stringify({})
+        }).done(function(response) {
+          if (response.code === 200) {
+            if (!response.data || response.data.devicePort.length === 0) {
+              $("#divnameid").append("没有端口");
+              return;
+            }
+            that.ports = response.data.devicePort;
+          } else {
+            swal({
+              title: "获取端口信息失败",
+              text: response.message,
+              type: "error",
+              timer: 1000,
+              showConfirmButton: false
+            });
+          }
+        }).fail(function() {
+          swal({
+            title: "通信失败",
+            text: "请检查网络",
+            type: "error",
+            showConfirmButton: true,
+            confirmButtonText: "确定",
+          });
+        });
+      }
+    }).mount('#app');
 </script>
 
 <script>
-
     //加载设备
     function loadDevice(inparam) {
         var toloadid = $(inparam).attr("id");
