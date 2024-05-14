@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_http_methods
 from controller.models import *
 from controller.funs import *
 from api.models import *
+from .models import RIB_Model, FIB_Model, verifyTable_Model
 
 def index(request):
     response = HttpResponse("Hello, world. You're at the index.")
@@ -130,3 +132,16 @@ def showController(request):
     rib = RIB_Model.objects.all()
     response = [{'deviceId':deviceID, 'ribLen': rib_count, 'pathNum': path_num, 'deviceNum': device_count}]
     return JsonResponse(response, safe=False)
+
+
+#post请求来删掉RIB表项
+@require_http_methods(["POST"])
+def delete_rib_entries(request):
+    device_id = request.GET.get('device_id') # 注意是从Get请求中提取device_id
+    if not device_id:
+        return JsonResponse({'status': 'error', 'message': 'Device ID is required'}, status=400)
+    count, _ = RIB_Model.objects.filter(deviceId_id=device_id).delete()
+    return JsonResponse({
+        'status': 'success',
+        'message': f'Deleted {count} entries'
+    })
