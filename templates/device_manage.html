@@ -143,7 +143,7 @@
                              <h3 class="box-title m-b-20" style="flex: 1">设备ID：{{ v.deviceId }}</h3>
 
                             <div>
-                                <button class="btn btn-primary waves-effect waves-light m-r-20" id="edit_lab_0" type="button" onclick="updatelab(this)"><span class="btn-label"><i class="fa fa-edit"></i></span>编辑表大小</button>
+                                <button class="btn btn-primary waves-effect waves-light m-r-20" id="edit_lab_0" type="button" onclick="tablesize(this)"><span class="btn-label"><i class="fa fa-edit"></i></span>编辑表大小</button>
                             </div>
                         </div>
                         <div>
@@ -370,7 +370,6 @@
                         timer: 1000,
                     })
                     verify_mode = response.data;
-                    {#location.reload()#}
                     devices.value[deviceIndex].deviceInfo.verifyMode = !verifyMode
                 }else {
                     swal({
@@ -438,46 +437,44 @@
             })
         })
             // 发送请求
-                    $.ajax({
-                        type: "POST",
-                        url: "/devices/getPort",
-                        dataType: "json",
-                        contentType: "application/json",
-                        data: JSON.stringify({})  // 不包含额外参数
-                    }).done(function (response) {
-                        if (response.code === 200) {
-                            {#externallabresponse.data[arrayindex].teachers = response;  // 安全地更新数据#}
+            $.ajax({
+                type: "POST",
+                url: "/devices/getPort",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({})  // 不包含额外参数
+            }).done(function (response) {
+                if (response.code === 200) {
 
-                            if (!response.data || response.data.devicePort.length === 0) {
-                                $("#" + divnameid).append("没有端口");
-                                return;
-                            }
-                            that.ports = response.data.devicePort
-                        } else {
-                            swal({
-                                title: "获取端口信息失败",
-                                text: response.message,
-                                type: "error",
-                                timer: 1000,
-                                showConfirmButton: false
-                            });
-                        }
-                    }).fail(function () {
-                        swal({
-                            title: "通信失败",
-                            text: "请检查网络",
-                            type: "error",
-                            showConfirmButton: true,
-                            confirmButtonText: "确定",
-                        });
+                    if (!response.data || response.data.devicePort.length === 0) {
+                        $("#" + divnameid).append("没有端口");
+                        return;
+                    }
+                    that.ports = response.data.devicePort
+                } else {
+                    swal({
+                        title: "获取端口信息失败",
+                        text: response.message,
+                        type: "error",
+                        timer: 1000,
+                        showConfirmButton: false
                     });
+                }
+            }).fail(function () {
+                swal({
+                    title: "通信失败",
+                    text: "请检查网络",
+                    type: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "确定",
+                });
+            });
         }
       }).mount('#app')
 
 </script>
+
 <script>
-
-
 
     //加载设备
     function loadDevice(inparam) {
@@ -592,7 +589,7 @@
     var externallabresponse;
     var verify_mode=false;
 
-    //编辑表大小 --> 后续更改成结构
+    //编辑表大小 --> 后续更改成接口
     function tablesize(inparam){
         $("#updatetablesize").modal(); //打开模态窗口
 
