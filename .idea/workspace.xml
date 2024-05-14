@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="nothing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/controller_manage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/controller_manage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cpuLine.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cpuLine.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/device_manage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/device_manage.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,6 +145,8 @@
       <workItem from="1714291441880" duration="2713000" />
       <workItem from="1714489695927" duration="9234000" />
       <workItem from="1715242158358" duration="106000" />
+      <workItem from="1715490316697" duration="3615000" />
+      <workItem from="1715657907895" duration="2788000" />
     </task>
     <task id="LOCAL-00001" summary="尝试修复admin ui问题">
       <created>1713154020933</created>
@@ -234,7 +239,14 @@
       <option name="project" value="LOCAL" />
       <updated>1715093057213</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="nothing">
+      <created>1715490406510</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1715490406510</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

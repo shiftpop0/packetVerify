@@ -285,9 +285,60 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            <div id="app" class="row" >
+                <div>{{ message }}</div>
+                <div class="col-lg-12 col-sm-12 col-xs-12" v-for="v of devices">
+                    <div class="white-box" id="divwrapper_0" style="position: relative;">
+                        <h3 class="box-title m-b-20">设备ID：{{ v.deviceId }}</h3>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="active" role="presentation">
+                                <a href="#detail0" aria-controls="detail0" role="tab" data-toggle="tab" aria-expanded="true">
+                                    <span class="visible-xs"><i class="ti-home"></i></span><span class="hidden-xs">介绍</span>
+                                </a></li><li role="presentation" class="">
+                            <a id="laba_0" onclick="loadDevice(this)" href="#port0" aria-controls="port0" role="tab" data-toggle="tab" aria-expanded="false">
+                                <span class="visible-xs"><i class="ti-user"></i></span><span class="hidden-xs">端口信息</span></a>
+                        </li>
+                            <li role="presentation" class="">
+                                <a href="#action0" aria-controls="action0" role="tab" data-toggle="tab" aria-expanded="false">
+                                    <span class="visible-xs"><i class="ti-more"></i></span><span class="hidden-xs">操作</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" role="tabpanel" id="detail0">
+                                <div class="col-md-12">
+                                    <p>吞吐量：{{ v.deviceInfo.throughput }} pps</p><p>验证速率：{{ v.deviceInfo.verifySpeed }} pps</p><p>平均时延：{{ v.deviceInfo.avgDelay }} ms</p><p>验证开关：</p><p>表利用率：{{ v.deviceInfo.tableUsage }}%</p>
+                                </div><div class="clearfix"></div>
+                            </div>
+                            <div class="tab-pane" role="tabpanel" id="port0">
+                                <button class="btn btn-info waves-effect waves-light m-b-20" id="port0" type="button" onclick="loadDevice(this)"><span class="btn-label"><i class="fa fa-plus"></i></span>刷新</button>
+                                <div class="col-md-12" id="toinsertteacher_0">
+                                    <div class="col-md-3 col-sm-3" v-for="(v, index) in ports">
+                                        <a id="0_0" href="javascript:void(0)" onclick="renderteacher(this)">
+                                            <div class="white-box">
+                                                <div class="row">
+                                                    <div class="col-md-8 col-sm-8">
+                                                        <h3 class="box-title m-b-0">端口：{{ index }}</h3>
+                                                        <p>ipAddress: {{ v.ipAddress }}/p>
+                                                        <p>mask：{{ v.mask }}</p>
+                                                        <p>speed：{{ v.mask }}</p>
+                                                        <p>rx：{{ v.rx }}</p>
+                                                        <p>tx：{{ v.tx }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                <div class="clearfix"></div>
+                                </div>
+                           <div class="tab-pane" role="tabpanel" id="action0"><div class="col-md-12"><button class="btn btn-primary waves-effect waves-light m-r-20" id="edit_lab_0" type="button" onclick="updatelab(this)"><span class="btn-label"><i class="fa fa-edit"></i></span>编辑表大小</button><button class="btn btn-danger waves-effect waves-light" id="verify_set_0" type="button" onclick="verifyset(this)"><span class="btn-label"><i class="fa fa-exchange"></i></span>切换验证开关</button></div>
+                        <div class="clearfix"></div>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
             <div class="row" id="rowtoinsertlab">
-
-
 
 
                 <!--<div class="col-lg-6 col-sm-6 col-xs-12" id="divwrapper_index">
@@ -414,6 +465,43 @@
 <!-- /#wrapper -->
 <!-- jQuery -->
 <script src="/static/plugins/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="https://unpkg.com/vue@3"></script>
+<script type="module">
+
+    const { createApp, ref } = Vue
+      createApp({
+        setup() {
+            let message = ref("s");
+          return {
+              message: message,
+              devices: ref([
+    {
+        deviceId: 1,
+        deviceInfo: {
+            throughput: 100,
+            verifySpeed: 66,
+            avgDelay: 0.1,
+            verifyMode: false,
+            tableUsage: 0.12
+        }
+    },
+    {
+        deviceId: 2,
+        deviceInfo: {
+            throughput: 200,
+            verifySpeed: 200,
+            avgDelay: 0.05,
+            verifyMode: true,
+            tableUsage: 0.25
+        }
+    }
+]),
+              ports: []
+          }
+        }
+
+      }).mount('#app')
+</script>
 <script>
     $(document).ready(function () {
 
