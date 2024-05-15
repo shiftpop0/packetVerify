@@ -161,7 +161,7 @@
                                 <tr>
                                   <th scope="col">IP地址</th>
                                   <th scope="col">掩码</th>
-                                  <th scope="col">speed</th>
+                                  <th scope="col">速率</th>
                                   <th scope="col">rx</th>
                                   <th scope="col">tx</th>
                                 </tr>
@@ -392,83 +392,6 @@
 </script>
 
 <script>
-    //加载设备
-    function loadDevice(inparam) {
-        var toloadid = $(inparam).attr("id");
-        var arrayindex = parseInt(toloadid.substring(toloadid.lastIndexOf("_") + 1)); // 获取实际的索引
-        var divnameid = "toinsertteacher_" + arrayindex;
-        var masknameid = "divwrapper_" + arrayindex;
-
-        // 显示加载中遮罩
-        $("#" + masknameid).busyLoad("show", {
-            text: "获取中 ...",
-            animation: "fade",
-            background: "rgba(0, 0, 0, 0.86)",
-            spinner: "cube-grid"
-        });
-
-        // 发送请求
-        $.ajax({
-            type: "POST",
-            url: "/devices/getPort",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({})  // 不包含额外参数
-        }).always(function () {
-            // 隐藏加载中遮罩
-            $("#" + masknameid).busyLoad("hide");
-        }).done(function (response) {
-            if (response.code === 200) {
-                externallabresponse.data[arrayindex].teachers = response;  // 安全地更新数据
-                $("#" + divnameid).empty();
-
-                if (!response.data || response.data.devicePort.length === 0) {
-                    $("#" + divnameid).append("没有端口");
-                    return;
-                }
-                // 遍历并显示每个端口的详细信息
-                $.each(response.data.devicePort, function(index, port) {
-                    $("#" + divnameid).append(
-                        $("<div>").addClass("col-md-3 col-sm-3").append(
-                            $("<div>").addClass("white-box").append(
-                                $("<div>").addClass("row").append(
-                                    $("<div>").addClass("col-md-8 col-sm-8").append(
-                                        $("<h3>").addClass("box-title m-b-0").text("端口：" + index)
-                                    ).append(
-                                        $("<p>").text("IP地址：" + port.ipAddress)
-                                    ).append(
-                                        $("<p>").text("掩码：" + port.mask)
-                                    ).append(
-                                        $("<p>").text("速率：" + port.arriveSpeed)
-                                    ).append(
-                                        $("<p>").text("接收：" + port.rx)
-                                    ).append(
-                                        $("<p>").text("发送：" + port.tx)
-                                    )
-                                )
-                            )
-                        )
-                    );
-                });
-            } else {
-                swal({
-                    title: "获取端口信息失败",
-                    text: response.message,
-                    type: "error",
-                    timer: 1000,
-                    showConfirmButton: false
-                });
-            }
-        }).fail(function () {
-            swal({
-                title: "通信失败",
-                text: "请检查网络",
-                type: "error",
-                showConfirmButton: true,
-                confirmButtonText: "确定",
-            });
-        });
-    }
     $(document).ready(function () {
 
         $(window).paroller();

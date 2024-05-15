@@ -6,15 +6,27 @@ import json
 
 def showDevice(request):
     device_url = 'http://127.0.0.1:8001/device'
-    deviceInfo = json.loads(requests.get(device_url+'/deviceInfo').text).get('data')
-    # netInfo = json.loads(requests.get(device_url+'/netInfo').text).get('data')
     response = []
-    response.append({'deviceId': 1, 'deviceInfo': deviceInfo})
-    # test
-    deviceInfo = {"throughput": 200, "verifySpeed": 200, "avgDelay": 0.05, "verifyMode": True, "tableUsage": 0.25}
-    response.append({'deviceId': 2, 'deviceInfo': deviceInfo})
-    print(response)
-    return JsonResponse(response, safe=False)
+
+    try:
+        device_info = json.loads(requests.get(f'{device_url}/deviceInfo').text).get('data')
+        for device in device_info:
+            response.append({
+                'deviceId': device['id'],
+                'deviceInfo': {
+                    'throughput': device['throughput'],
+                    'verifySpeed': device['verifySpeed'],
+                    'avgDelay': device['avgDelay'],
+                    'verifyMode': device['verifyMode'],
+                    'tableUsage': device['tableUsage']
+                }
+            })
+        return JsonResponse(response, safe=False)
+
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'error': 'Failed to fetch device info', 'details': str(e)}, status=500)
+    except Exception as e:
+        return JsonResponse({'error': 'An error occurred', 'details': str(e)}, status=500)
 
 def getPort(request):
     device_url = 'http://127.0.0.1:8001/device'
@@ -24,7 +36,15 @@ def getPort(request):
     print(response)
     return JsonResponse(response, safe=False)
 
+
 def verifySet(request):
-    device_url = 'http://127.0.0.1:8001/device'
-    response = json.loads(requests.get(device_url + '/verifySwitch').text).get('data')
-    return JsonResponse(response, safe=False)
+    payload = json.loads(request.body)
+    device_id = payload.get('id')
+
+    if device_id is not None:
+        device_url = 'http://127.0.0.1:8001/device'
+        response = requests.post(device_url + '/verifySwitch', json={'id': device_id})
+        response_data = response.json().get('data')
+        return JsonResponse(response_data, safe=False)
+    else:
+        return JsonResponse({'error': 'ID not provided'}, status=400)

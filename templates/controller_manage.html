@@ -512,11 +512,9 @@
     });
 
     function openpath(inparam) {
-        const deviceIds = [1, 2]; // 需要开启的设备ID
+        const deviceIds = [1,2]; // 需要开启的设备ID
         let currentIndex = 0;
-        var todeleteid = $(inparam).attr("id")
-        var arrayindex =  parseInt(todeleteid.substring(todeleteid.lastIndexOf("_")+1)) //获取到实际的index
-        var maskid = "divwrapper_"+arrayindex;
+        var maskid = "divwrapper_"+1;
         swal({
             title: "确定开启验证路径吗?",
             text: "当前验证开关状态：关",
