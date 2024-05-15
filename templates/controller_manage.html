@@ -157,7 +157,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
                     <h4 class="page-title">源地址验证控制器</h4>
                 </div>
-                <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12 tool-container">
                     <button class="btn btn-success waves-effect waves-light " type="button" id="new_controller">
                                     <span class="btn-label">
                                         <i class="fa fa-plus"></i>
@@ -173,6 +173,106 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            {% verbatim %}
+            <div id="app" class="row" >
+                <div id="updateControllerModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="updatemyLargeModalLabel" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                <h4 class="modal-title" id="updatemyLargeModalLabel"><span >编辑路由</span></h4> </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="deviceId">
+                                <div class="form-group">
+                                     <label for="update_table_size" class="control-label">源前缀</label>
+                                    <input type="text" class="form-control" id="srcIP" :value="editInfo.srcIP" >
+                                </div>
+                                <div class="form-group">
+                                     <label for="update_table_size" class="control-label">目的前缀</label>
+                                    <input type="text" class="form-control" id="dstIP" :value="editInfo.dstIP">
+                                </div>
+                                <div class="form-group">
+                                     <label for="update_table_size" class="control-label">下一跳</label>
+                                    <input type="text" class="form-control" id="next_hop" :value="editInfo.next_hop">
+                                </div>
+                                <div class="form-group">
+                                     <label for="update_table_size" class="control-label">入接口</label>
+                                    <input type="number" class="form-control" id="inInterface" min="1" max="1024" :value="editInfo.inInterface">
+                                </div>
+                                <div class="form-group">
+                                     <label for="update_table_size" class="control-label">出接口</label>
+                                    <input type="number" class="form-control" id="outInterface" min="1" max="1024" :value="editInfo.outInterface">
+                                </div>
+
+                                <button class="btn btn-success waves-effect waves-light" type="button" id="update_table_button" @click="updateInfo()">
+                                        <span class="btn-label">
+                                            <i class="fa fa-refresh fa-spin"></i>
+                                        </span>更新
+                                </button>
+                                <!-- 新增的显示更新状态的元素 -->
+                                <div id="update_status_message" style="display:none; margin-top: 20px;" class="alert"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
+                <div class="col-lg-12 col-sm-12 col-xs-12" v-for="(v, index) of controllers">
+                    <div class="white-box" id="divwrapper_0" style="position: relative;">
+                        <div style="display: flex">
+                             <h3 class="box-title m-b-20" style="flex: 1">控制器ID：{{ v.deviceId }}</h3>
+
+                            <div>
+                                <button class="btn btn-primary waves-effect waves-light m-r-20" id="edit_lab_0" type="button" onclick="tablesize(this)"><span class="btn-label"><i class="fa fa-edit"></i></span>编辑路由</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="col-md-4" style="margin-bottom: 10px">路由表大小：{{ v.deviceNum }} 条</div>
+                                <div class="col-md-4" style="margin-bottom: 10px">验证路径数量：{{ v.pathNum }} 条</div>
+                                <div class="col-md-4" style="margin-bottom: 10px">数据平面设备数量：{{ v.ribLen }} 条</div>
+                            </div>
+
+                            <div style="margin-top: 24px; margin-bottom: 32px; border-block-start: 1px solid rgba(5, 5, 5, 0.06)"></div>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th scope="col">设备ID</th>
+                                  <th scope="col">源前缀</th>
+                                  <th scope="col">目的前缀</th>
+                                  <th scope="col">下一跳</th>
+                                  <th scope="col">入接口</th>
+                                  <th scope="col">出接口</th>
+                                  <th scope="col">操作</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="v of tops">
+                                  <th scope="row">{{ v.deviceId }}</th>
+                                  <td>{{ v.srcIP }}</td>
+                                  <td>{{ v.dstIP }}</td>
+                                  <td>{{ v.next_hop }}</td>
+                                  <td>{{ v.inInterface }}</td>
+                                  <td>{{ v.outInterface }}</td>
+                                    <td>
+                                        <button class="btn btn-outline-secondary" id="edit_RIB_0" type="button" v-on:click="updatelab(index)" title="编辑路由表">      <i class="fa fa-edit"></i>    </button>
+                                        <button class="btn btn-outline-secondary" id="delete_RIB_0" type="button" onclick="verifyset(this)" title="删除路由表项">      <i class="fa fa-trash-o"></i>    </button>
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+                {% endverbatim %}
+
             <div class="row" id="rowtoinsertlab">
 
             </div>
@@ -210,6 +310,8 @@
     </div>
 </div>
 
+
+
 <!-- jQuery -->
 <script src="/static/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 <script>
@@ -243,22 +345,110 @@
 <!--遮罩插件-->
 <script src="/static/js/busy-load/dist/app.min.js"></script>
 <script src="/static/paroller/jquery.paroller.min.js"></script>
+<script src="https://unpkg.com/vue@3"></script>
+<script type="module">
+    const { createApp, ref } = Vue;
+
+    createApp({
+      setup() {
+        let controllers = ref([]);
+        let tops = ref([]);
+        let editInfo = ref({})
+        return {
+          controllers,
+          tops,
+            editInfo,
+            updatelab(index) {
+                editInfo.value = tops.value[index]
+                $("#updateControllerModal").modal(); //打开模态窗口
+            },
+            updateInfo() {
+                $("#updateControllerModal").modal('hide'); //打开模态窗口
+              swal({
+                    title: "提示",
+                    text: '更新成功',
+                        type: "success",
+                    timer: 1000,
+                    showConfirmButton: false
+                })
+            }
+        };
+      },
+      mounted() {
+        var that = this;
+        // 获取设备列表
+        $.ajax({
+            type: "POST",
+            url: "/controller/showController",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({})
+        }).always(function () {
+            //隐藏加载中遮罩
+            $("#page-wrapper").busyLoad("hide");
+        }).done(function (response) {
+
+            if (response.code === 200) {
+                if (response.data == null || response.data.length == 0) {
+                    $("#rowtoinsertlab").append(
+                        "没有控制器"
+                    )
+                    return
+                }
+
+                that.controllers = response.data
+            } else {
+                swal({
+                    title: "获取设备节点失败",
+                    text: response.message,
+                    type: "error",
+                    timer: 1000,
+                    showConfirmButton: false
+                })
+            }
+        }).fail(function () {
+            swal({
+                title: "通信失败",
+                text: "请检查网络",
+                type: "error",
+                showConfirmButton: true,
+                confirmButtonText: "确定",
+            })
+        })
+        $.ajax({
+            type: "POST",
+            url: "/controller/genTopo",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({})
+        }).done(function (response) {
+            if (response.code === 200) {
+                that.tops = response.data;
+            } else {
+                swal({
+                    title: "获取端口信息失败",
+                    text: response.message,
+                    type: "error",
+                    timer: 1000,
+                    showConfirmButton: false
+                });
+            }
+        }).fail(function () {
+            swal({
+                title: "通信失败",
+                text: "请检查网络",
+                type: "error",
+                showConfirmButton: true,
+                confirmButtonText: "确定",
+            });
+        });
+    } }).mount('#app');
+</script>
+
 <script>
 
     var externallabresponse;
 
-    //imparam=this
-    function updatelab(inparam) {
-        var toupdateid = $(inparam).attr("id")
-        var arrayindex =  parseInt(toupdateid.substring(toupdateid.lastIndexOf("_")+1)) //获取到实际的index
-        var idindatabase = externallabresponse.data[arrayindex].id;
-
-        $("#update_lab_id").val(idindatabase)
-        $("#update_lab_name").val(externallabresponse.data[arrayindex].name)
-        $("#update_lab_address").val(externallabresponse.data[arrayindex].address)
-        $("#update_lab_about").val(externallabresponse.data[arrayindex].about)
-        $("#updatelabmodal").modal();
-    }
 
     // 显示模态框的函数：每次点击按钮时，将相关的隐藏设备 ID 字段设置正确，并重置所有输入框
     function showAddRoutingTableModal(button) {
@@ -499,76 +689,9 @@
             spinner: "cube-grid"
         });
 
-        $.ajax({
-            type: "POST",
-            url: "/controller/genTopo",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({})
-        }).always(function () {
-            $("#" + masknameid).busyLoad("hide");
-        }).done(function (response) {
-            if (response.code === 200) {
-                var htmlContent = buildTableHTML(response.data);
-                $("#" + divnameid).empty().append(htmlContent);
-            } else {
-                swal({
-                    title: "获取端口信息失败",
-                    text: response.message,
-                    type: "error",
-                    timer: 1000,
-                    showConfirmButton: false
-                });
-            }
-        }).fail(function () {
-            swal({
-                title: "通信失败",
-                text: "请检查网络",
-                type: "error",
-                showConfirmButton: true,
-                confirmButtonText: "确定",
-            });
-        });
+
     }
 
-    function buildTableHTML(data) {
-        var table = '<table class="table">';
-        table += '<thead>';
-        table += '  <tr>';
-        table += '    <th scope="col">设备ID</th>';
-        table += '    <th scope="col">源前缀</th>';
-        table += '    <th scope="col">目的前缀</th>';
-        table += '    <th scope="col">下一跳</th>';
-        table += '    <th scope="col">入接口</th>';
-        table += '    <th scope="col">出接口</th>';
-        table += '    <th scope="col">操作</th>';
-        table += '  </tr>';
-        table += '</thead>';
-        table += '<tbody>';
-
-        data.forEach(function(port, idx) {
-            table += `<tr${idx % 2 === 0 ? ' class="table-light"' : ''}>`;
-            table += `  <td>${port.deviceId}</td>`;
-            table += `  <td>${port.srcIP}</td>`;
-            table += `  <td>${port.dstIP}</td>`;
-            table += `  <td>${port.next_hop}</td>`;
-            table += `  <td>${port.inInterface}</td>`;
-            table += `  <td>${port.outInterface}</td>`;
-            table += `  <td>`;
-            table += `    <button class="btn btn-outline-secondary" id="edit_RIB_${idx}" type="button" onClick="updatelab(this)" title="编辑路由表">`;
-            table += `      <i class="fa fa-edit"></i>`;
-            table += `    </button>`;
-            table += `    <button class="btn btn-outline-secondary" id="delete_RIB_${idx}" type="button" onClick="verifyset(this)" title="删除路由表项">`;
-            table += `      <i class="fa fa-trash-o"></i>`;
-            table += `    </button>`;
-            table += `  </td>`;
-            table += '</tr>';
-        });
-
-        table += '</tbody>';
-        table += '</table>';
-        return table;
-    }
 
     //用于添加路由表 需加入接口
     function newRIB(inparam) {
@@ -583,7 +706,7 @@
 
     $(document).ready(function () {
         // 刷新页面
-        $("#refresh_controller").click(function() {
+        $("#refresh_controller").click(function () {
             location.reload();  // 刷新当前页面
         });
 
@@ -626,7 +749,7 @@
             $("#insertcontrollermodal").modal('hide');  // 关闭模态窗口
         })
 
-        $("#insert_RIB_button").click(function() {
+        $("#insert_RIB_button").click(function () {
             var srcIP = $("#sourcePrefix").val();
             var dstIP = $("#destinationPrefix").val();
             var nextHop = $("#nextHop").val();
@@ -679,128 +802,6 @@
         });
 
         //发送请求
-        $.ajax({
-            type: "POST",
-            url: "/controller/showController",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({})
-        }).always(function () {
-            //隐藏加载中遮罩
-            $("#page-wrapper").busyLoad("hide");
-        }).done(function (response) {
-
-            if (response.code === 200) {
-                externallabresponse = response
-                if (response.data == null || response.data.length == 0) {
-                    $("#rowtoinsertlab").append(
-                        "没有控制器"
-                    )
-                    return
-                }
-
-                for (var i = 0; i < response.data.length; i++) {
-                    $("#rowtoinsertlab").append(
-                        $("<div>").addClass("col-lg-12 col-sm-12 col-xs-12").append(
-                            $("<div>").addClass("white-box").attr("id", "divwrapper_" + i).append(
-                                $("<div>").addClass("row justify-content-end").append(
-                                    $("<div>").addClass("col-md-10").append(
-                                        $("<h3>").addClass("box-title m-b-20").text("控制器ID：" + response.data[i].deviceId)
-                                    ),
-                                    $("<div>").addClass("col-md-2 col-auto").append(
-                                        $("<button>").addClass("btn btn-primary waves-effect waves-light").attr("id", "edit_lab_" + i).attr("type", "button").attr("onClick", "newRIB(this)").append(
-                                            $("<span>").addClass("btn-label").append(
-                                                $("<i>").addClass("fa fa-edit")
-                                            ),
-                                            "添加路由表"
-                                        )
-                                    )
-                                ),
-                                $("<ul>").addClass("nav nav-tabs").attr("role","tablist").append(
-                                    $("<li>").addClass("active").attr("role","presentation").append(
-                                        $("<a>").attr("href","#detail"+i).attr("aria-controls","detail"+i).attr("role","tab").attr("data-toggle","tab").attr("aria-expanded","true").append(
-                                            $("<span>").addClass("visible-xs").append(
-                                                $("<i>").addClass("ti-home")
-                                            )
-                                        ).append(
-                                            $("<span>").addClass("hidden-xs").append(
-                                                "介绍"
-                                            )
-                                        )
-                                    )
-                                ).append(
-                                    $("<li>").addClass("").attr("role","presentation").append(
-                                        $("<a>").attr("id","laba_"+i).attr("onClick","loadRIB(this)").attr("href","#controller"+i).attr("aria-controls","controller"+i).attr("role","tab").attr("data-toggle","tab").attr("aria-expanded","false").append(
-                                            $("<span>").addClass("visible-xs").append(
-                                                $("<i>").addClass("ti-user")
-                                            )
-                                        ).append(
-                                            $("<span>").addClass("hidden-xs").append(
-                                                "路由表信息"
-                                            )
-                                        )
-                                    )
-                                ).append(
-                                    $("<li>").addClass("").attr("role","presentation").append(
-                                        $("<a>").attr("href","#action"+i).attr("aria-controls","action"+i).attr("role","tab").attr("data-toggle","tab").attr("aria-expanded","false").append(
-                                            $("<span>").addClass("visible-xs").append(
-                                                $("<i>").addClass("ti-more")
-                                            )
-                                        ).append(
-                                            $("<span>").addClass("hidden-xs").append(
-                                                "操作"
-                                            )
-                                        )
-                                    )
-                                ),
-                                $("<div>").addClass("tab-content").append(
-                                    $("<div>").addClass("tab-pane active").attr("role","tabpanel").attr("id","detail"+i).append(
-                                        $("<div>").addClass("col-md-12").append(
-                                            $("<p>").append("路由表大小：" + response.data[i].ribLen + " 条"),
-                                            $("<p>").append("验证路径数量：" + response.data[i].pathNum + " 条"),
-                                            $("<p>").append("数据平面设备数量：" + response.data[i].deviceNum + " 台")
-                                        ),
-                                        $("<div>").addClass("clearfix")
-                                    ),
-                                    $("<div>").addClass("tab-pane").attr("role","tabpanel").attr("id","controller"+i).append(
-                                        $("<div>").addClass("col-md-12").attr("id","toinsertteacher_"+i),
-                                        $("<div>").addClass("clearfix")
-                                    ),
-                                    $("<div>").addClass("tab-pane").attr("role","tabpanel").attr("id","action"+i).append(
-                                        $("<div>").addClass("col-md-12").append(
-                                            $("<button>").addClass("btn btn-danger waves-effect waves-light").attr("id","verify_set_"+i).attr("type","button").attr("onClick","delController(this)").append(
-                                                $("<span>").addClass("btn-label").append(
-                                                    $("<i>").addClass("fa fa-trash-o")
-                                                ),
-                                                "删除控制器"
-                                            )
-                                        ),
-                                        $("<div>").addClass("clearfix")
-                                    )
-                                )
-                            )
-                        )
-                    )
-                }
-            } else {
-                swal({
-                    title: "获取设备节点失败",
-                    text: response.message,
-                    type: "error",
-                    timer: 1000,
-                    showConfirmButton: false
-                })
-            }
-        }).fail(function () {
-            swal({
-                title: "通信失败",
-                text: "请检查网络",
-                type: "error",
-                showConfirmButton: true,
-                confirmButtonText: "确定",
-            })
-        })
-
     })
 
 </script>
