@@ -511,10 +511,12 @@
         });
     });
 
-    function openpath() {
+    function openpath(inparam) {
         const deviceIds = [1, 2]; // 需要开启的设备ID
         let currentIndex = 0;
-
+        var todeleteid = $(inparam).attr("id")
+        var arrayindex =  parseInt(todeleteid.substring(todeleteid.lastIndexOf("_")+1)) //获取到实际的index
+        var maskid = "divwrapper_"+arrayindex;
         swal({
             title: "确定开启转发路径吗?",
             text: "当前转发开关状态：关",
@@ -525,7 +527,6 @@
             cancelButtonText: "取消",
             closeOnConfirm: false
         }, function(){
-            var maskid = "divwrapper_1";
             $("#"+maskid).busyLoad("show", {
                 text: "开启中 ...",
                 animation: "fade",
@@ -544,8 +545,19 @@
                     }).done(function (response) {
                         if (response.code === 200) {
                             currentIndex++;
-                            sendRequest();
+                            if (currentIndex < deviceIds.length) {
+                                sendRequest();
+                            } else {
+                                $("#"+maskid).busyLoad("hide");
+                                swal({
+                                    title: "开启成功",
+                                    text: "所有设备已成功开启",
+                                    type: "success",
+                                    timer: 1500,
+                                });
+                            }
                         } else {
+                            $("#"+maskid).busyLoad("hide");
                             swal({
                                 title: "开启失败",
                                 text: response.message,
@@ -555,6 +567,7 @@
                             });
                         }
                     }).fail(function () {
+                        $("#"+maskid).busyLoad("hide");
                         swal({
                             title: "通信失败",
                             text: "请检查网络",
@@ -562,24 +575,13 @@
                             showConfirmButton: true,
                             confirmButtonText: "确定",
                         });
-                    }).always(function () {
-                        if (currentIndex >= deviceIds.length) {
-                            $("#"+maskid).busyLoad("hide");
-                            swal({
-                                title: "开启成功",
-                                text: "所有设备已成功开启",
-                                type: "success",
-                                timer: 1000,
-                            });
-                            location.reload();
-                        }
                     });
                 }
             }
-
             sendRequest();
         });
     }
+
 
     //删除控制器（留空）
     function delController(inparam){
