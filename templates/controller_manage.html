@@ -518,8 +518,8 @@
         var arrayindex =  parseInt(todeleteid.substring(todeleteid.lastIndexOf("_")+1)) //获取到实际的index
         var maskid = "divwrapper_"+arrayindex;
         swal({
-            title: "确定开启转发路径吗?",
-            text: "当前转发开关状态：关",
+            title: "确定开启验证路径吗?",
+            text: "当前验证开关状态：关",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -551,7 +551,7 @@
                                 $("#"+maskid).busyLoad("hide");
                                 swal({
                                     title: "开启成功",
-                                    text: "所有设备已成功开启",
+                                    text: "验证路径已成功开启",
                                     type: "success",
                                     timer: 1500,
                                 });
