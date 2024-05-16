@@ -132,7 +132,7 @@
                             if (!nodeMap.has(device.deviceId)) {
                                 nodes.push({
                                     id: device.deviceId,
-                                    label: `设备${device.deviceId}: ${device.srcIP}`,
+                                    label: `设备${device.deviceId}: ${device.controller_ip}`,
                                     shape: 'image',
                                     image: '/static/plugins/images/router.png',
                                     size: 30,
@@ -159,7 +159,7 @@
                                 if (nextDevice && !nodeMap.has(nextDevice.deviceId)) {
                                     nodes.push({
                                         id: nextDevice.deviceId,
-                                        label: `设备${nextDevice.deviceId}: ${nextDevice.srcIP}`,
+                                        label: `设备${nextDevice.deviceId}: ${nextDevice.controller_ip}`,
                                         shape: 'image',
                                         image: '/static/plugins/images/router.png',
                                         size: 30,

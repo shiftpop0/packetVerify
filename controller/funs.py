@@ -25,7 +25,7 @@ def analyze_routing_topology():
     url = 'http://127.0.0.1:8000/controller/rib'
     try:
         response = requests.get(url)
-        response.raise_for_status()  # 检查响应
+        # response.raise_for_status()  # 检查响应
         data = response.json()['data']
     except requests.RequestException as e:
         return f"Request Fail: {e}"
@@ -35,14 +35,14 @@ def analyze_routing_topology():
     for device_id, entries in data.items():
         for route in entries:
             if all(is_valid_ip(route[field]) for field in ['srcIP', 'dstIP', 'nextHop']):
-                connection = (device_id, route['srcIP'], route['dstIP'], route['nextHop'], route['inInterfaceId'], route['outInterfaceId'])
+                connection = (device_id, route['srcIP'], route['dstIP'], route['nextHop'], route['inInterfaceId'], route['outInterfaceId'], route['controller_ip'])
                 connections.append(connection)
             else:
                 print(f"Invalid IP format found and skipped: {route}")
 
     # 建立每个设备端口到端口的连接
     G = nx.DiGraph()
-    for deviceID, srcIP, dstIP, next_hop, inInterface, outInterface in connections:
+    for deviceID, srcIP, dstIP, next_hop, inInterface, outInterface,controlloer_ip in connections:
         src_label = f"{srcIP} {outInterface}" #源是出接口
         dst_label = f"{next_hop} {inInterface}" #目的是入接口
         if next_hop and next_hop != '""':

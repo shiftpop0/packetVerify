@@ -167,9 +167,11 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr v-for="v of ports">
-                                    <!--  <th scope="row">{{ v.ipAddress }}</th> 加个修改函数去修改-->
-                                  <td>{{ modifyIpAddress(v.ipAddress, index) }}</td>
+                                <tr v-for="(v, index2) of ports">
+                                    <!-- <td>{{ v.ipAddress }}</td>
+                                     <th scope="row">{{ v.ipAddress }}</th> 加个修改函数去修改>-->
+
+                                  <td>{{ modifyIpAddress(v.ipAddress, index,index2) }}</td>
                                   <td>{{ v.mask }}</td>
                                   <td>{{ v.arriveSpeed }}</td>
                                   <td>{{ v.rx }}</td>
@@ -179,13 +181,13 @@
                             </table>
                             <div v-if="v.deviceInfo.verifyMode">
                                 <div style="margin-top: 24px; margin-bottom: 32px; border-block-start: 1px solid rgba(5, 5, 5, 0.06)"></div>
-                                <h3 class="box-title m-b-1" style="flex: 10%;">验证项</h3>
+                                <h3 class="box-title m-b-1" style="flex: 10%;">验证表</h3>
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
                                             <!-- 提取IP地址的前三个部分，并添加0 -->
                                             <th scope="col" width="200px">源前缀: {{ ports[0].ipAddress.split('.').slice(0, 3).join('.') + '.0' }}/{{ ports[0].mask }}</th>
-                                            <th scope="col">验证端口: 1</th>
+                                            <th scope="col">验证端口: 0</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -320,10 +322,33 @@
             });
           },
 
-          modifyIpAddress(ipAddress, deviceIndex) {
-            let ipParts = ipAddress.split('.');
-            ipParts[2] = parseInt(ipParts[2]) + deviceIndex;
-            return ipParts.join('.');
+          modifyIpAddress(ipAddress, deviceIndex,ruleIndex) {
+            //let ipParts = ipAddress.split('.');
+            //ipParts[2] = parseInt(ipParts[2]) + deviceIndex;
+           // return ipParts.join('.');
+              if(deviceIndex==1){
+                  if(ruleIndex==0){
+                      return "10.0.11.2";
+                    }else if(ruleIndex==1) {
+                      return "10.0.3.9";
+                    }else if(ruleIndex==2){
+                        return "192.168.0.105";
+                    }else if(ruleIndex==3){
+                        return "10.0.22.2";
+                  }
+              }
+                if(deviceIndex==2) {
+                    if (ruleIndex == 0) {
+                        return "10.0.21.3";
+                    }else if(ruleIndex==1){
+                        return "192.168.0.106";
+                    }else if(ruleIndex==2){
+                        return "10.0.22.3"
+                    }else if(ruleIndex==3) {
+                        return "10.0.33.3";
+                    }
+                }
+                return ipAddress;
           }
         };
       },
@@ -346,6 +371,7 @@
               return;
             }
             that.devices = response.data;
+            console.log(that.devices);
           } else {
             swal({
               title: "获取设备节点失败",
@@ -380,6 +406,7 @@
               return;
             }
             that.ports = response.data.devicePort;
+            console.log(that.ports)
           } else {
             swal({
               title: "获取端口信息失败",

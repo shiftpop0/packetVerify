@@ -9,6 +9,7 @@ class RIB_Model(models.Model):
     nextHop = models.CharField(max_length=15)
     inInterfaceId = models.IntegerField()
     outInterfaceId = models.IntegerField()
+    controller_ip = models.CharField(max_length=15,default='192.168.0.1')
 
 class FIB_Model(models.Model):
     id = models.AutoField(primary_key=True)

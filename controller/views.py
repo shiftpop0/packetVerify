@@ -28,6 +28,7 @@ def RIB(request):
             'nextHop': r.nextHop,
             'inInterfaceId': r.inInterfaceId,
             'outInterfaceId': r.outInterfaceId,
+            'controller_ip': r.controller_ip
         })
         # 临时展示，控制3条路由表
         if len(response)> 2:
@@ -38,14 +39,15 @@ def genTopo(request):
     topoInfo = analyze_routing_topology()
     try:
         response = []
-        for deviceID, srcIP, dstIP, next_hop, inInterface, outInterface in topoInfo:
+        for deviceID, srcIP, dstIP, next_hop, inInterface, outInterface, controller_ip in topoInfo:
             response.append({
                 'deviceId': deviceID,
                 'srcIP': srcIP,
                 'dstIP': dstIP,
                 'next_hop': next_hop,
                 'inInterface': inInterface,
-                'outInterface': outInterface
+                'outInterface': outInterface,
+                'controller_ip':  controller_ip
             })
         return JsonResponse(response, safe=False)
     except Exception as e:
