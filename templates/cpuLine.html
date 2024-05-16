@@ -4,197 +4,347 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <TITLE>实时更新数据的jQuery图表插件DEMO演示</TITLE>
 
-<!-- <script type="text/javascript" src="js/jquery.js"></script> -->
 <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="js/highcharts.js"></script> -->
 <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
 
-    <!--
 <script type="text/javascript">
-$(function () {
-$(document).ready(function() {
-	function getData(n) {
-    const arr = [];
-    let i,
-        x,
-        a,
-        b,
-        c,
-        spike;
-    for (
-        i = 0, x = Date.UTC(new Date().getUTCFullYear(), 0, 1) - n * 36e5;
-        i < n;
-        i = i + 1, x = x + 36e5
-    ) {
-        if (i % 100 === 0) {
-            a = 2 * Math.random();
-        }
-        if (i % 1000 === 0) {
-            b = 2 * Math.random();
-        }
-        if (i % 10000 === 0) {
-            c = 2 * Math.random();
-        }
-        if (i % 50000 === 0) {
-            spike = 10;
-        } else {
-            spike = 0;
-        }
-        arr.push([
-            x,
-            2 * Math.sin(i / 100) + a + b + c + spike + Math.random()
-        ]);
-    }
-    return arr;
+
+function createLiveChart() {
+    Highcharts.chart('container1', {
+        chart: {
+            type: 'areaspline',
+            events: {
+                load: function() {
+                    var series = this.series[0];
+                    setInterval(function() {
+                        var x = (new Date()).getTime(), // current time
+                            y = Math.random() * 10 + 50;
+                        series.addPoint([x, y], true, true);
+                    }, 2000);
+                }
+            }
+        },
+        title: {
+            text: '验证峰值吞吐量'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150
+        },
+        yAxis: {
+            title: {
+                text: 'Value'
+            },
+            min: 0,
+            max: 100
+        },
+        series: [{
+            name: 'Random data',
+            data: (function() {
+                var data = [],
+                    time = (new Date()).getTime(),
+                    i;
+
+                for (i = -19; i <= 0; i += 1) {
+                    data.push({
+                        x: time + i * 1000,
+                        y: Math.random() * 10 + 50
+                    });
+                }
+                return data;
+            }())
+        }]
+    });
 }
-const n = 500000,
-    data = getData(n);
 
+function createColumnChart() {
+    Highcharts.chart('container2', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '验证路径更新频率'
+        },
+        xAxis: {
+            categories: [
+                'Seattle HQ',
+                'San Francisco',
+                'Tokyo'
+            ]
+        },
+        yAxis: [{
+            min: 0,
+            title: {
+                text: 'Employees'
+            }
+        }, {
+            title: {
+                text: 'Profit (millions)'
+            },
+            opposite: true
+        }],
+        legend: {
+            shadow: false
+        },
+        tooltip: {
+            shared: true
+        },
+        plotOptions: {
+            column: {
+                grouping: false,
+                shadow: false,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Employees',
+            color: 'rgba(165,170,217,1)',
+            data: [150, 73, 20],
+            pointPadding: 0.3,
+            pointPlacement: -0.2
+        }, {
+            name: 'Employees Optimized',
+            color: 'rgba(126,86,134,.9)',
+            data: [140, 90, 40],
+            pointPadding: 0.4,
+            pointPlacement: -0.2
+        }, {
+            name: 'Profit',
+            color: 'rgba(248,161,63,1)',
+            data: [183.6, 178.8, 198.5],
+            tooltip: {
+                valuePrefix: '$',
+                valueSuffix: ' M'
+            },
+            pointPadding: 0.3,
+            pointPlacement: 0.2,
+            yAxis: 1
+        }, {
+            name: 'Profit Optimized',
+            color: 'rgba(186,60,61,.9)',
+            data: [203.6, 198.8, 208.5],
+            tooltip: {
+                valuePrefix: '$',
+                valueSuffix: ' M'
+            },
+            pointPadding: 0.4,
+            pointPlacement: 0.2,
+            yAxis: 1
+        }]
+    });
+}
 
-console.time('line');
-Highcharts.chart('container2', {
+(function (H) {
+    H.seriesTypes.pie.prototype.animate = function (init) {
+        const series = this,
+            chart = series.chart,
+            points = series.points,
+            { animation } = series.options,
+            { startAngleRad } = series;
 
-    chart: {
-        zooming: {
-            type: 'x'
+        function fanAnimate(point, startAngleRad) {
+            const graphic = point.graphic,
+                args = point.shapeArgs;
+
+            if (graphic && args) {
+                graphic
+                    .attr({
+                        start: startAngleRad,
+                        end: startAngleRad,
+                        opacity: 1
+                    })
+                    .animate({
+                        start: args.start,
+                        end: args.end
+                    }, {
+                        duration: animation.duration / points.length
+                    }, function () {
+                        if (points[point.index + 1]) {
+                            fanAnimate(points[point.index + 1], args.end);
+                        }
+                        if (point.index === series.points.length - 1) {
+                            series.dataLabelsGroup.animate({
+                                opacity: 1
+                            },
+                            void 0,
+                            function () {
+                                points.forEach(point => {
+                                    point.opacity = 1;
+                                });
+                                series.update({
+                                    enableMouseTracking: true
+                                }, false);
+                                chart.update({
+                                    plotOptions: {
+                                        pie: {
+                                            innerSize: '40%',
+                                            borderRadius: 8
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+            }
         }
-    },
 
-    title: {
-        text: 'Highcharts drawing ' + n + ' points',
-        align: 'left'
-    },
-
-    subtitle: {
-        text: 'Using the Boost module',
-        align: 'left'
-    },
-
-    accessibility: {
-        screenReaderSection: {
-            beforeChartFormat: '<{headingTagName}>' +
-                '{chartTitle}</{headingTagName}><div>{chartSubtitle}</div>' +
-                '<div>{chartLongdesc}</div><div>{xAxisDescription}</div><div>' +
-                '{yAxisDescription}</div>'
+        if (init) {
+            points.forEach(point => {
+                point.opacity = 0;
+            });
+        } else {
+            fanAnimate(points[0], startAngleRad);
         }
-    },
+    };
+}(Highcharts));
 
-    tooltip: {
-        valueDecimals: 2
-    },
-
-    xAxis: {
-        type: 'datetime'
-    },
-
-    series: [{
-        data: data,
-        lineWidth: 0.5,
-        name: 'Hourly data points'
-    }]
-
-});
-console.timeEnd('line');
-
-});
-
-});
-</script>
--->
-<script type="text/javascript">
 $(function () {
-$(document).ready(function() {
-	Highcharts.setOptions({
-		global: {
-			useUTC: false
-		}
-	});
+    $(document).ready(function() {
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
 
-	var chart;
-	$('#container').highcharts({
-		chart: {
-			type: 'spline',
-			animation: Highcharts.svg, // don't animate in old IE
-			marginRight: 10,
-			events: {
-				load: function() {
-					// 在这里更新数据，最后一个参数是更新间隔
-					// set up the updating of the chart ea·ch second
-					var series = this.series[0];
-					setInterval(function() {
-						var x = (new Date()).getTime(), // current time
-							y = Math.random() * 10 + 50;
-						series.addPoint([x, y], true, true);
-					}, 2000);
-				}
-			}
-		},
-		title: {
-			text: '控制器CPU利用率'
-		},
-		xAxis: {
-			type: 'datetime',
-			tickPixelInterval: 10
-		},
-		yAxis: {
-			title: {
-				text: ''
-			},
-            min: 0, // 设置y轴最小值为0
-            max: 100,
-            labels: {
-                formatter: function() {
-                    return this.value+"%"; // 在y轴标签中不显示百分号
+        // Create charts
+        createLiveChart();
+        createColumnChart();
+
+        // Pie Chart
+        Highcharts.chart('container3', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: '验证路径数量分类',
+                align: 'center'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
                 }
             },
-			plotLines: [{
-				value: 0,
-				width: 1,
-				color: '#808080'
-			}]
-		},
-		tooltip: {
-			formatter: function() {
-					return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
-                        (Highcharts.numberFormat(this.y, 2)+'%');
-			}
-		},
-		legend: {
-			enabled: false
-		},
-		exporting: {
-			enabled: false
-		},
-		series: [{
-			name: 'data',
-			data: (function() {
-				// generate an array of random data
-				var data = [],
-					time = (new Date()).getTime(),
-					i;
-				// 数据在这里初始化
-				for (i = -9; i <= 0; i++) {
-					data.push({
-						x: time + i * 2000,
-						// y: 5
-						y: Math.random() * 10 + 50
-					});
-				}
-				return data;
-			})()
-		}]
-	});
-});
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    borderWidth: 2,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b><br>{point.percentage}%',
+                        distance: 20
+                    }
+                }
+            },
+            series: [{
+                enableMouseTracking: false,
+                animation: {
+                    duration: 2000
+                },
+                colorByPoint: true,
+                data: [{
+                    name: 'Customer Support',
+                    y: 21.3
+                }, {
+                    name: 'Development',
+                    y: 18.7
+                }, {
+                    name: 'Sales',
+                    y: 20.2
+                }, {
+                    name: 'Marketing',
+                    y: 14.2
+                }, {
+                    name: 'Other',
+                    y: 25.6
+                }]
+            }]
+        });
+
+        // Spline Chart
+        Highcharts.chart('container4', {
+            chart: {
+                type: 'spline',
+                animation: Highcharts.svg,
+                marginRight: 10,
+                events: {
+                    load: function() {
+                        var series = this.series[0];
+                        setInterval(function() {
+                            var x = (new Date()).getTime(),
+                                y = Math.random() * 10 + 50;
+                            series.addPoint([x, y], true, true);
+                        }, 2000);
+                    }
+                }
+            },
+            title: {
+                text: '控制器CPU利用率'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 10
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                },
+                min: 0,
+                max: 100,
+                labels: {
+                    formatter: function() {
+                        return this.value + "%";
+                    }
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                    return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                        (Highcharts.numberFormat(this.y, 2) + '%');
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [{
+                name: 'data',
+                data: (function() {
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+                    for (i = -9; i <= 0; i++) {
+                        data.push({
+                            x: time + i * 2000,
+                            y: Math.random() * 10 + 50
+                        });
+                    }
+                    return data;
+                })()
+            }]
+        });
+    });
 });
 </script>
 
-</HEAD>
+</head>
 
-<BODY>
-{#<div id="status" name="status">状态信息</div>#}
-<div id="container" style="width:700px;height:400px;margin:0 auto;"></div>
-{#<div id="container2" style="width:700px;height:400px;margin:0 auto;"></div>#}
-<div style="text-align:center;clear:both;">
-</div>
-</BODY>
-</HTML>
+<body>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+        <div id="container4" style="width: 48%; height: 400px;"></div>
+        <div id="container1" style="width: 48%; height: 400px;"></div>
+        <div id="container2" style="width: 48%; height: 400px; margin-top: 20px;"></div>
+        <div id="container3" style="width: 48%; height: 400px; margin-top: 20px;"></div>
+    </div>
+</body>
+</html>

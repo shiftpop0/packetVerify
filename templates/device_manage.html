@@ -184,7 +184,7 @@
                                     <thead>
                                         <tr>
                                             <!-- 提取IP地址的前三个部分，并添加0 -->
-                                            <th scope="col">源前缀: {{ ports[0].ipAddress.split('.').slice(0, 3).join('.') + '.0' }}/{{ ports[0].mask }}</th>
+                                            <th scope="col" width="200px">源前缀: {{ ports[0].ipAddress.split('.').slice(0, 3).join('.') + '.0' }}/{{ ports[0].mask }}</th>
                                             <th scope="col">验证端口: 1</th>
                                         </tr>
                                     </thead>
