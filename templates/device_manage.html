@@ -168,7 +168,8 @@
                               </thead>
                               <tbody>
                                 <tr v-for="v of ports">
-                                  <th scope="row">{{ v.ipAddress }}</th>
+                                    <!--  <th scope="row">{{ v.ipAddress }}</th> 加个修改函数去修改-->
+                                  <td>{{ modifyIpAddress(v.ipAddress, index) }}</td>
                                   <td>{{ v.mask }}</td>
                                   <td>{{ v.arriveSpeed }}</td>
                                   <td>{{ v.rx }}</td>
@@ -182,7 +183,8 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th scope="col">源前缀: {{ ports[0].ipAddress }}/{{ ports[0].mask }}</th>
+                                            <!-- 提取IP地址的前三个部分，并添加0 -->
+                                            <th scope="col">源前缀: {{ ports[0].ipAddress.split('.').slice(0, 3).join('.') + '.0' }}/{{ ports[0].mask }}</th>
                                             <th scope="col">验证端口: 1</th>
                                         </tr>
                                     </thead>
@@ -252,6 +254,7 @@
         return {
           devices,
           ports,
+
           verifyset(deviceIndex) {
             let verifyMode = devices.value[deviceIndex].deviceInfo.verifyMode;
 
@@ -315,9 +318,16 @@
                 });
               });
             });
+          },
+
+          modifyIpAddress(ipAddress, deviceIndex) {
+            let ipParts = ipAddress.split('.');
+            ipParts[2] = parseInt(ipParts[2]) + deviceIndex;
+            return ipParts.join('.');
           }
         };
       },
+
       mounted() {
         var that = this;
         // 获取设备列表
@@ -361,7 +371,8 @@
           url: "/devices/getPort",
           dataType: "json",
           contentType: "application/json",
-          data: JSON.stringify({})
+          data: JSON.stringify({
+          })
         }).done(function(response) {
           if (response.code === 200) {
             if (!response.data || response.data.devicePort.length === 0) {
@@ -389,6 +400,7 @@
         });
       }
     }).mount('#app');
+
 </script>
 
 <script>
@@ -444,27 +456,6 @@
             })
             $("#updatetablesize").modal('hide');  // 关闭模态窗口
 
-            /*
-             var newSize = $("#update_table_size").val();  // 获取用户输入的新大小
-             $.ajax({
-                url: 'url',  // 服务器端的更新URL
-                type: 'POST',
-                data: { size: newSize },
-                success: function(response) {
-                    // 假设response是服务器返回的数据，根据你的需要处理
-                    if (response.success) {
-                        // 显示成功消息
-                        $("#update_status_message").text("更新成功！").removeClass('alert-danger').addClass('alert-success').show();
-                    } else {
-                        // 显示错误消息
-                        $("#update_status_message").text("更新失败，请重试。").removeClass('alert-success').addClass('alert-danger').show();
-                    }
-                },
-                error: function() {
-                    // 处理网络或其他错误
-                    $("#update_status_message").text("网络错误，更新未成功！").removeClass('alert-success').addClass('alert-danger').show();
-                }
-            });*/
         });
     }
 

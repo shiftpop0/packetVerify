@@ -31,12 +31,10 @@ def showDevice(request):
 def getPort(request):
     device_url = 'http://127.0.0.1:8001/device'
     devicePort = json.loads(requests.get(device_url+'/portInfo').text).get('data')
-    response = []
     response= {'deviceId': 0, 'devicePort': devicePort}
-    print(response)
     return JsonResponse(response, safe=False)
 
-
+# 用于跟踪请求次数的全局计数器
 def verifySet(request):
     payload = json.loads(request.body)
     device_id = payload.get('id')
