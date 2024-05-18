@@ -260,6 +260,10 @@
 
             const toggleVerifyTable = () => {
                 showVerifyTable.value = !showVerifyTable.value;
+                // 如果验证开关关闭，将showVerifyTable设为false
+                if (!showVerifyTable.value) {
+                    showVerifyTable.value = false;
+                }
             };
 
             return {
@@ -311,6 +315,9 @@
                                     timer: 1000,
                                 });
                                 devices.value[deviceIndex].deviceInfo.verifyMode = !verifyMode;
+                                if (!devices.value[deviceIndex].deviceInfo.verifyMode) {
+                                    showVerifyTable.value = false;
+                                }
                             } else {
                                 swal({
                                     title: "切换失败",
