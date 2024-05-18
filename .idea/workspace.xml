@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="renew">
+    <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="big update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/colors/default.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/colors/default.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/controller_manage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/controller_manage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cpuLine.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cpuLine.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/device_manage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/device_manage.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/topo_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/topo_index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,7 +149,9 @@
       <workItem from="1715490316697" duration="3615000" />
       <workItem from="1715657907895" duration="16469000" />
       <workItem from="1715744212967" duration="1717000" />
-      <workItem from="1715757598959" duration="8988000" />
+      <workItem from="1715757598959" duration="14649000" />
+      <workItem from="1716052178692" duration="358000" />
+      <workItem from="1716058036898" duration="177000" />
     </task>
     <task id="LOCAL-00001" summary="尝试修复admin ui问题">
       <created>1713154020933</created>
@@ -261,7 +258,14 @@
       <option name="project" value="LOCAL" />
       <updated>1715684684621</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="big update">
+      <created>1715779323762</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1715779323762</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,7 +297,8 @@
     <MESSAGE value="change requirements.txt" />
     <MESSAGE value="nothing" />
     <MESSAGE value="renew" />
-    <option name="LAST_COMMIT_MESSAGE" value="renew" />
+    <MESSAGE value="big update" />
+    <option name="LAST_COMMIT_MESSAGE" value="big update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

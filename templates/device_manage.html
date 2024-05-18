@@ -39,7 +39,15 @@
         <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
     </svg>
 </div>
-
+<div id="waitingModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>请等待...</p>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="wrapper">
     <!-- Topbar header - style you can find in pages.scss -->
     <div id="TopNavigation"></div>
@@ -259,7 +267,18 @@
             let showVerifyTable = ref(false);
 
             const toggleVerifyTable = () => {
-                showVerifyTable.value = !showVerifyTable.value;
+                window.toggleVerifyTable = function() {
+    // 显示模态框
+    $('#waitingModal').modal('show');
+
+    setTimeout(function() {
+        // 执行函数
+        vm.toggleVerifyTable();
+
+        // 隐藏模态框
+        $('#waitingModal').modal('hide');
+    }, 3000);
+};
                 // 如果验证开关关闭，将showVerifyTable设为false
                 if (!showVerifyTable.value) {
                     showVerifyTable.value = false;
