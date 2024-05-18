@@ -49,12 +49,13 @@
 
     <div id="page-wrapper">
         <div class="container-fluid">
-            <div id = "insertdevicemodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="insertmyLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div id="insertdevicemodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="insertmyLargeModalLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="insertmyLargeModalLabel"><span >新增设备节点</span></h4> </div>
+                            <h4 class="modal-title" id="insertmyLargeModalLabel"><span>新增设备节点</span></h4>
+                        </div>
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="insert_ip_address" class="control-label">设备IP地址(示例：10.1.1.1/24)</label>
@@ -83,23 +84,24 @@
                 <!-- /.modal-dialog -->
             </div>
 
-             <!-- 编辑表大小的表单 -->
-            <div id = "updatetablesize" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="updatemyLargeModalLabel" aria-hidden="true" style="display: none;">
+            <!-- 编辑表大小的表单 -->
+            <div id="updatetablesize" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="updatemyLargeModalLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="updatemyLargeModalLabel"><span >编辑表大小</span></h4> </div>
+                            <h4 class="modal-title" id="updatemyLargeModalLabel"><span>编辑表大小</span></h4>
+                        </div>
                         <div class="modal-body">
                             <input type="hidden" id="update_lab_id">
                             <div class="form-group">
-                                 <label for="update_table_size" class="control-label">表大小 (介于1和1024之间)</label>
+                                <label for="update_table_size" class="control-label">表大小 (介于1和1024之间)</label>
                                 <input type="number" class="form-control" id="update_table_size" min="1" max="1024">
                             </div>
                             <button class="btn btn-success waves-effect waves-light" type="button" id="update_table_button">
-                                    <span class="btn-label">
-                                        <i class="fa fa-refresh fa-spin"></i>
-                                    </span>更新
+                                <span class="btn-label">
+                                    <i class="fa fa-refresh fa-spin"></i>
+                                </span>更新
                             </button>
                             <!-- 新增的显示更新状态的元素 -->
                             <div id="update_status_message" style="display:none; margin-top: 20px;" class="alert"></div>
@@ -118,31 +120,36 @@
                     <div class="page-title">源地址验证设备节点</div>
                 </div>
                 <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12 tool-container">
+                    <button class="btn btn-warning waves-effect waves-light" type="button" id="toggleVerifyTable" onclick="toggleVerifyTable()">
+                        <span class="btn-label">
+                            <i class="fa fa-check"></i>
+                        </span> 显示验证表
+                    </button>
 
-                    <button class="btn btn-success waves-effect waves-light " type="button" id="new_device">
-                                    <span class="btn-label">
-                                        <i class="fa fa-plus"></i>
-                                    </span>新增设备节点
+                    <button class="btn btn-success waves-effect waves-light" type="button" id="new_device">
+                        <span class="btn-label">
+                            <i class="fa fa-plus"></i>
+                        </span>新增设备节点
                     </button>
                     <button class="btn btn-info waves-effect waves-light" type="button" id="refresh_devices">
-                                <span class="btn-label">
-                                    <i class="fa fa-refresh"></i>
-                                </span> 重新加载设备
+                        <span class="btn-label">
+                            <i class="fa fa-refresh"></i>
+                        </span> 重新加载设备
                     </button>
                     <button class="right-side-toggle waves-effect waves-light btn-info btn-circle pull-right m-l-20"><i class="ti-settings text-white"></i></button>
-
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-                {% verbatim %}
-            <div id="app" class="row" >
+            {% verbatim %}
+            <div id="app" class="row">
                 <div class="col-lg-12 col-sm-12 col-xs-12" v-for="(v, index) of devices">
                     <div class="white-box" id="divwrapper_0" style="position: relative;">
                         <div style="display: flex">
-                             <h3 class="box-title m-b-20" style="flex: 1">设备ID：{{ v.deviceId }}</h3>
-
+                            <h3 class="box-title m-b-20" style="flex: 1">设备ID：{{ v.deviceId }}</h3>
                             <div>
-                                <button class="btn btn-primary waves-effect waves-light m-r-20" id="edit_lab_0" type="button" onclick="tablesize(this)"><span class="btn-label"><i class="fa fa-edit"></i></span>编辑表大小</button>
+                                <button class="btn btn-primary waves-effect waves-light m-r-20" id="edit_lab_0" type="button" onclick="tablesize()">
+                                    <span class="btn-label"><i class="fa fa-edit"></i></span>编辑表大小
+                                </button>
                             </div>
                         </div>
                         <div>
@@ -157,29 +164,27 @@
                             <div style="margin-top: 24px; margin-bottom: 32px; border-block-start: 1px solid rgba(5, 5, 5, 0.06)"></div>
                             <h3 class="box-title m-b-1" style="flex: 10%;">端口信息表</h3>
                             <table class="table table-striped">
-                              <thead>
-                                <tr>
-                                  <th scope="col">IP地址</th>
-                                  <th scope="col">掩码</th>
-                                  <th scope="col">速率</th>
-                                  <th scope="col">rx</th>
-                                  <th scope="col">tx</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr v-for="(v, index2) of ports">
-                                    <!-- <td>{{ v.ipAddress }}</td>
-                                     <th scope="row">{{ v.ipAddress }}</th> 加个修改函数去修改>-->
-
-                                  <td>{{ modifyIpAddress(v.ipAddress, index,index2) }}</td>
-                                  <td>{{ v.mask }}</td>
-                                  <td>{{ v.arriveSpeed }}</td>
-                                  <td>{{ v.rx }}</td>
-                                  <td>{{ v.tx }}</td>
-                                </tr>
-                              </tbody>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">IP地址</th>
+                                        <th scope="col">掩码</th>
+                                        <th scope="col">速率</th>
+                                        <th scope="col">rx</th>
+                                        <th scope="col">tx</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(v, index2) of ports">
+                                        <td>{{ modifyIpAddress(v.ipAddress, index, index2) }}</td>
+                                        <td>{{ v.mask }}</td>
+                                        <td>{{ v.arriveSpeed }}</td>
+                                        <td>{{ v.rx }}</td>
+                                        <td>{{ v.tx }}</td>
+                                    </tr>
+                                </tbody>
                             </table>
-                            <div v-if="v.deviceInfo.verifyMode">
+                            <!-- 开关起显示验证表 -->
+                            <div v-if="showVerifyTable && v.deviceInfo.verifyMode">
                                 <div style="margin-top: 24px; margin-bottom: 32px; border-block-start: 1px solid rgba(5, 5, 5, 0.06)"></div>
                                 <h3 class="box-title m-b-1" style="flex: 10%;">验证表</h3>
                                 <table class="table table-striped">
@@ -191,16 +196,15 @@
                                         </tr>
                                     </thead>
                                 </table>
+                            </div>
+
                         </div>
-                    </div>
+
                     </div>
                 </div>
             </div>
-
-                {% endverbatim %}
-            <div class="row" id="rowtoinsertlab">
-
-            </div>
+            {% endverbatim %}
+            <div class="row" id="rowtoinsertlab"></div>
             <!-- ============================================================== -->
             <!-- Right sidebar -->
             <!-- ============================================================== -->
@@ -241,340 +245,247 @@
     <!-- ============================================================== -->
 </div>
 
-
 <!-- jQuery -->
 <script src="/static/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="https://unpkg.com/vue@3"></script>
+
 <script type="module">
     const { createApp, ref } = Vue;
 
-    createApp({
-      setup() {
-        let devices = ref([]);
-        let ports = ref([]);
+    const app = createApp({
+        setup() {
+            let devices = ref([]);
+            let ports = ref([]);
+            let showVerifyTable = ref(false);
 
-        return {
-          devices,
-          ports,
+            const toggleVerifyTable = () => {
+                showVerifyTable.value = !showVerifyTable.value;
+            };
 
-          verifyset(deviceIndex) {
-            let verifyMode = devices.value[deviceIndex].deviceInfo.verifyMode;
+            return {
+                devices,
+                ports,
+                showVerifyTable,
+                toggleVerifyTable,
+                verifyset(deviceIndex) {
+                    let verifyMode = devices.value[deviceIndex].deviceInfo.verifyMode;
 
-            swal({
-              title: "确定切换验证状态吗?",
-              text: `当前验证开关状态：` + (verifyMode ? "开" : "关"),
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#DD6B55",
-              confirmButtonText: verifyMode ? "关闭" : "开启",
-              cancelButtonText: "取消",
-              closeOnConfirm: false
-            }, function() {
-              var arrayindex = deviceIndex; // 获取到实际的index
-              var idindatabase = devices.value[deviceIndex].deviceId;
-              var maskid = "divwrapper_" + arrayindex;
+                    swal({
+                        title: "确定切换验证状态吗?",
+                        text: `当前验证开关状态：` + (verifyMode ? "开" : "关"),
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: verifyMode ? "关闭" : "开启",
+                        cancelButtonText: "取消",
+                        closeOnConfirm: false
+                    }, function() {
+                        var arrayindex = deviceIndex; // 获取到实际的index
+                        var idindatabase = devices.value[deviceIndex].deviceId;
+                        var maskid = "divwrapper_" + arrayindex;
 
-              $("#" + maskid).busyLoad("show", {
-                text: "切换中 ...",
-                animation: "fade",
-                background: "rgba(0, 0, 0, 0.86)",
-                spinner: "cube-grid"
-              });
+                        $("#" + maskid).busyLoad("show", {
+                            text: "切换中 ...",
+                            animation: "fade",
+                            background: "rgba(0, 0, 0, 0.86)",
+                            spinner: "cube-grid"
+                        });
 
-              // 发送请求
-              $.ajax({
-                type: "POST",
-                url: "/devices/verifySet",
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify({
-                  id: idindatabase
-                })
-              }).always(function() {
-                $("#"+maskid).busyLoad("hide");
-              }).done(function(response) {
-                if (response.code === 200) {
-                  swal({
-                    title: "切换成功",
-                    text: response.message,
-                    type: "success",
-                    timer: 1000,
-                  });
-                  devices.value[deviceIndex].deviceInfo.verifyMode = !verifyMode;
-                } else {
-                  swal({
-                    title: "切换失败",
-                    text: response.message,
-                    type: "error",
-                    timer: 1000,
-                    showConfirmButton: false
-                  });
-                }
-              }).fail(function() {
-                swal({
-                  title: "通信失败",
-                  text: "请检查网络",
-                  type: "error",
-                  showConfirmButton: true,
-                  confirmButtonText: "确定",
-                });
-              });
-            });
-          },
+                        // 发送请求
+                        $.ajax({
+                            type: "POST",
+                            url: "/devices/verifySet",
+                            dataType: "json",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                id: idindatabase
+                            })
+                        }).always(function() {
+                            $("#" + maskid).busyLoad("hide");
+                        }).done(function(response) {
+                            if (response.code === 200) {
+                                swal({
+                                    title: "切换成功",
+                                    text: response.message,
+                                    type: "success",
+                                    timer: 1000,
+                                });
+                                devices.value[deviceIndex].deviceInfo.verifyMode = !verifyMode;
+                            } else {
+                                swal({
+                                    title: "切换失败",
+                                    text: response.message,
+                                    type: "error",
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        }).fail(function() {
+                            swal({
+                                title: "通信失败",
+                                text: "请检查网络",
+                                type: "error",
+                                showConfirmButton: true,
+                                confirmButtonText: "确定",
+                            });
+                        });
+                    });
+                },
 
-          modifyIpAddress(ipAddress, deviceIndex,ruleIndex) {
-            //let ipParts = ipAddress.split('.');
-            //ipParts[2] = parseInt(ipParts[2]) + deviceIndex;
-           // return ipParts.join('.');
-              if(deviceIndex==1){
-                  if(ruleIndex==0){
-                      return "10.0.11.2";
-                    }else if(ruleIndex==1) {
-                      return "10.0.3.9";
-                    }else if(ruleIndex==2){
-                        return "192.168.0.105";
-                    }else if(ruleIndex==3){
-                        return "10.0.22.2";
-                  }
-              }
-                if(deviceIndex==2) {
-                    if (ruleIndex == 0) {
-                        return "10.0.21.3";
-                    }else if(ruleIndex==1){
-                        return "192.168.0.106";
-                    }else if(ruleIndex==2){
-                        return "10.0.22.3"
-                    }else if(ruleIndex==3) {
-                        return "10.0.33.3";
+                modifyIpAddress(ipAddress, deviceIndex, ruleIndex) {
+                    if (deviceIndex == 1) {
+                        if (ruleIndex == 0) {
+                            return "10.0.11.2";
+                        } else if (ruleIndex == 1) {
+                            return "10.0.3.9";
+                        } else if (ruleIndex == 2) {
+                            return "192.168.0.105";
+                        } else if (ruleIndex == 3) {
+                            return "10.0.22.2";
+                        }
                     }
+                    if (deviceIndex == 2) {
+                        if (ruleIndex == 0) {
+                            return "10.0.21.3";
+                        } else if (ruleIndex == 1) {
+                            return "192.168.0.106";
+                        } else if (ruleIndex == 2) {
+                            return "10.0.22.3";
+                        } else if (ruleIndex == 3) {
+                            return "10.0.33.3";
+                        }
+                    }
+                    return ipAddress;
                 }
-                return ipAddress;
-          }
-        };
-      },
+            };
+        },
 
-      mounted() {
-        var that = this;
-        // 获取设备列表
-        $.ajax({
-          type: "POST",
-          url: "/devices/showDevice",
-          dataType: "json",
-          contentType: "application/json",
-          data: JSON.stringify({})
-        }).always(function() {
-          $("#page-wrapper").busyLoad("hide");
-        }).done(function(response) {
-          if (response.code === 200) {
-            if (!response.data || response.data.length === 0) {
-              $("#rowtoinsertlab").append("没有设备");
-              return;
-            }
-            that.devices = response.data;
-            console.log(that.devices);
-          } else {
-            swal({
-              title: "获取设备节点失败",
-              text: response.message,
-              type: "error",
-              timer: 1000,
-              showConfirmButton: false
-            });
-          }
-        }).fail(function() {
-          swal({
-            title: "通信失败",
-            text: "请检查网络",
-            type: "error",
-            showConfirmButton: true,
-            confirmButtonText: "确定",
-          });
-        });
-
-        // 获取端口信息
-        $.ajax({
-          type: "POST",
-          url: "/devices/getPort",
-          dataType: "json",
-          contentType: "application/json",
-          data: JSON.stringify({
-          })
-        }).done(function(response) {
-          if (response.code === 200) {
-            if (!response.data || response.data.devicePort.length === 0) {
-              $("#divnameid").append("没有端口");
-              return;
-            }
-            that.ports = response.data.devicePort;
-            console.log(that.ports)
-          } else {
-            swal({
-              title: "获取端口信息失败",
-              text: response.message,
-              type: "error",
-              timer: 1000,
-              showConfirmButton: false
-            });
-          }
-        }).fail(function() {
-          swal({
-            title: "通信失败",
-            text: "请检查网络",
-            type: "error",
-            showConfirmButton: true,
-            confirmButtonText: "确定",
-          });
-        });
-      }
-    }).mount('#app');
-
-</script>
-
-<script>
-    $(document).ready(function () {
-
-        $(window).paroller();
-
-        $("#LeftSlidebar").load("{% static '/html/LeftSlidebarAdmin.html' %}", function () {
-            <!-- Menu Plugin JavaScript -->
-            $.getScript("{% static '/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js' %}",function () {
-                <!-- Custom Theme JavaScript -->
-                $.getScript("{% static '/js/custom.min.js' %}");
-            });//<!-- Menu Plugin JavaScript -->
-
-        });
-        $("#TopNavigation").load("/static/html/TopNavigationStudent.html" , function () {
-        });
-    });
-</script>
-<!-- Bootstrap Core JavaScript -->
-<script src=" {% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<!--slimscroll JavaScript -->
-<script src="{% static '/js/jquery.slimscroll.js' %}"></script>
-<!--Wave Effects -->
-<script src="{% static '/js/waves.js' %}"></script>
-<!--Style Switcher -->
-<script src="{% static '/plugins/bower_components/styleswitcher/jQuery.style.switcher.js' %}"></script>
-<!-- Sweet-Alert  -->
-<script src="{% static '/plugins/bower_components/sweetalert/sweetalert.min.js' %}"></script>
-<script src="{% static '/plugins/bower_components/sweetalert/jquery.sweet-alert.custom.js' %}"></script>
-<!--遮罩插件-->
-<script src="/static/js/busy-load/dist/app.min.js"></script>
-<script src="/static/paroller/jquery.paroller.min.js"></script>
-
-<!-- 逻辑代码 -->
-<script>
-    var externallabresponse;
-    var verify_mode=false;
-
-    //编辑表大小 --> 后续更改成接口
-    function tablesize(inparam){
-        $("#updatetablesize").modal(); //打开模态窗口
-
-        // 绑定更新按钮的点击事件
-        $("#update_table_button").off('click').on('click', function() {
-            //使用静态
-            swal({
-                title: "提交成功",
-                text: "设备的表大小已更新",
-                icon: "success",
-                button: false, // 修改此处以确保显示“OK”按钮
-                timer: 2000
-            })
-            $("#updatetablesize").modal('hide');  // 关闭模态窗口
-
-        });
-    }
-
-    //切换验证开关
-    function verifyset(inparam) {
-        //console.log(verify_mode);
-        swal({
-            title: "确定切换验证状态吗?",
-            text: `当前验证开关状态：`+(verify_mode === true ? "开" : "关"),
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: (verify_mode === true ? "关闭" : "开启"),
-            cancelButtonText:"取消",
-            closeOnConfirm: false
-        }, function(){
-
-            var todeleteid = $(inparam).attr("id")
-            var arrayindex =  parseInt(todeleteid.substring(todeleteid.lastIndexOf("_")+1)) //获取到实际的index
-            var idindatabase = externallabresponse.data[arrayindex].id;
-            var maskid = "divwrapper_"+arrayindex;
-
-            $("#"+maskid).busyLoad("show", {
-                text: "切换中 ...",
-                animation: "fade",
-                background: "rgba(0, 0, 0, 0.86)",
-                spinner: "cube-grid"
-            });
-
-            //发送请求
+        mounted() {
+            var that = this;
+            // 获取设备列表
             $.ajax({
                 type: "POST",
-                url: "/devices/verifySet",
+                url: "/devices/showDevice",
                 dataType: "json",
                 contentType: "application/json",
-                data: JSON.stringify({
-                    id:idindatabase
-                })
-            }).always(function () {
-                //隐藏加载中遮罩
-                $("#"+maskid).busyLoad("hide");
-
-            }).done(function (response) {
-
+                data: JSON.stringify({})
+            }).always(function() {
+                $("#page-wrapper").busyLoad("hide");
+            }).done(function(response) {
                 if (response.code === 200) {
+                    if (!response.data || response.data.length === 0) {
+                        $("#rowtoinsertlab").append("没有设备");
+                        return;
+                    }
+                    that.devices = response.data;
+                    console.log(that.devices);
+                } else {
                     swal({
-                        title: "切换成功",
-                        text: response.message,
-                        type: "success",
-                        timer: 1000,
-                    })
-                    verify_mode = response.data;
-                    location.reload()
-
-                }else {
-                    swal({
-                        title: "切换失败",
+                        title: "获取设备节点失败",
                         text: response.message,
                         type: "error",
                         timer: 1000,
                         showConfirmButton: false
-                    })
+                    });
                 }
-
-            }).fail(function () {
+            }).fail(function() {
                 swal({
                     title: "通信失败",
                     text: "请检查网络",
                     type: "error",
                     showConfirmButton: true,
                     confirmButtonText: "确定",
-                })
-            })
-        });
-    }
+                });
+            });
 
+            // 获取端口信息
+            $.ajax({
+                type: "POST",
+                url: "/devices/getPort",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({})
+            }).done(function(response) {
+                if (response.code === 200) {
+                    if (!response.data || response.data.devicePort.length === 0) {
+                        $("#divnameid").append("没有端口");
+                        return;
+                    }
+                    that.ports = response.data.devicePort;
+                    console.log(that.ports)
+                } else {
+                    swal({
+                        title: "获取端口信息失败",
+                        text: response.message,
+                        type: "error",
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }
+            }).fail(function() {
+                swal({
+                    title: "通信失败",
+                    text: "请检查网络",
+                    type: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "确定",
+                });
+            });
+        }
+    });
+
+    // 创建Vue实例并挂载
+    const vm = app.mount('#app');
+
+    // 暴露方法到全局
+    window.toggleVerifyTable = vm.toggleVerifyTable;
+    window.tablesize = function() {
+        $("#updatetablesize").modal(); // 打开模态窗口
+
+        // 绑定更新按钮的点击事件
+        $("#update_table_button").off('click').on('click', function() {
+            swal({
+                title: "提交成功",
+                text: "设备的表大小已更新",
+                icon: "success",
+                button: false, // 修改此处以确保显示“OK”按钮
+                timer: 2000
+            });
+            $("#updatetablesize").modal('hide');  // 关闭模态窗口
+        });
+    };
+</script>
+
+<script>
     $(document).ready(function () {
+        $(window).paroller();
+
+        $("#LeftSlidebar").load("{% static '/html/LeftSlidebarAdmin.html' %}", function () {
+            <!-- Menu Plugin JavaScript -->
+            $.getScript("{% static '/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js' %}", function () {
+                <!-- Custom Theme JavaScript -->
+                $.getScript("{% static '/js/custom.min.js' %}");
+            });//<!-- Menu Plugin JavaScript -->
+        });
+
+        $("#TopNavigation").load("/static/html/TopNavigationStudent.html", function () {
+        });
+
         // 刷新当前页面
         $("#refresh_devices").click(function() {
             location.reload();
         });
 
-        //新增设备节点
+        // 新增设备节点
         $("#new_device").click(function () {
             $("#insert_ip_address").val("")
             $("#insert_device_name").val("")
             $("#insert_device_about").val("")
 
-            $("#insertdevicemodal").modal()  //这里有bug, 打开会导致其他按钮失效
-        })
+            $("#insertdevicemodal").modal()  // 这里有bug, 打开会导致其他按钮失效
+        });
 
-        // 新增设备节点 ---不确定先模拟(后续功能需要更换成接口)
+        // 新增设备节点 --- 不确定先模拟(后续功能需要更换成接口)
         $("#insert_device_button").click(function () {
             var ipAddress = document.getElementById("insert_ip_address").value;
             var deviceName = document.getElementById("insert_device_name").value;
@@ -593,28 +504,41 @@
                 alert("介绍不能超过50字");
                 return false;
             }
-            //使用静态
+            // 使用静态
             swal({
                 title: "提交成功",
                 text: "您的设备信息已更新",
                 icon: "success",
                 button: false, // 修改此处以确保显示“OK”按钮
                 timer: 2000
-            })
+            });
             $("#insertdevicemodal").modal('hide');  // 关闭模态窗口
-        })
+        });
 
-        //打开就加载所有设备列表
+        // 打开就加载所有设备列表
         $("#page-wrapper").busyLoad("show", {
             text: "加载中 ...",
             animation: "fade",
             background: "rgba(0, 0, 0, 0.86)",
             spinner: "cube-grid"
         });
-
-    })
-
+    });
 </script>
-</body>
 
+<!-- Bootstrap Core JavaScript -->
+<script src=" {% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<!--slimscroll JavaScript -->
+<script src="{% static '/js/jquery.slimscroll.js' %}"></script>
+<!--Wave Effects -->
+<script src="{% static '/js/waves.js' %}"></script>
+<!--Style Switcher -->
+<script src="{% static '/plugins/bower_components/styleswitcher/jQuery.style.switcher.js' %}"></script>
+<!-- Sweet-Alert  -->
+<script src="{% static '/plugins/bower_components/sweetalert/sweetalert.min.js' %}"></script>
+<script src="{% static '/plugins/bower_components/sweetalert/jquery.sweet-alert.custom.js' %}"></script>
+<!--遮罩插件-->
+<script src="/static/js/busy-load/dist/app.min.js"></script>
+<script src="/static/paroller/jquery.paroller.min.js"></script>
+
+</body>
 </html>
