@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="big update">
+    <list default="true" id="6125f772-b4a2-4f89-81de-60b1e6e802d0" name="Changes" comment="change requirements.txt">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/17aff7ed-9ec9-4055-bce3-769affb3cfab.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/17aff7ed-9ec9-4055-bce3-769affb3cfab.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/258efa18-8619-454c-979b-d007ad002fc3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/258efa18-8619-454c-979b-d007ad002fc3.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/packetVerify.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/packetVerify.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024_4_21_16_59__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024_4_21_16_59__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirement.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirement.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/device_manage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/device_manage.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,7 +77,7 @@
       <recent name="D:\program\packetVerify\templates" />
     </key>
   </component>
-  <component name="RunManager" selected="Django Server.packetVerify">
+  <component name="RunManager" selected="Django 服务器.packetVerify">
     <configuration name="debug" type="PythonConfigurationType" factoryName="Python">
       <module name="packetVerify" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -101,9 +108,9 @@
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="packetVerify.settings" />
       </envs>
-      <option name="SDK_HOME" value="D:\apps\anaconda3\envs\packetVerify\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
@@ -118,7 +125,7 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Django Server.packetVerify" />
+      <item itemvalue="Django 服务器.packetVerify" />
       <item itemvalue="Python.debug" />
     </list>
   </component>

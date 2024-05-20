@@ -39,11 +39,16 @@
         <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
     </svg>
 </div>
+<div class="preloader">
+    <svg class="circular" viewBox="25 25 50 50">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+    </svg>
+</div>
 <div id="waitingModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <p>请等待...</p>
+                <p>请等待... 正在生成验证表</p>
             </div>
         </div>
     </div>
@@ -131,7 +136,7 @@
                     <button class="btn btn-warning waves-effect waves-light" type="button" id="toggleVerifyTable" onclick="toggleVerifyTable()">
                         <span class="btn-label">
                             <i class="fa fa-check"></i>
-                        </span> 显示验证表
+                        </span> 生成验证表
                     </button>
 
                     <button class="btn btn-success waves-effect waves-light" type="button" id="new_device">
@@ -267,18 +272,7 @@
             let showVerifyTable = ref(false);
 
             const toggleVerifyTable = () => {
-                window.toggleVerifyTable = function() {
-                // 显示模态框
-                $('#waitingModal').modal('show');
-
-                setTimeout(function() {
-                    // 执行函数
-                    vm.toggleVerifyTable();
-
-                    // 隐藏模态框
-                    $('#waitingModal').modal('hide');
-                }, 3000);
-            };
+                showVerifyTable.value = !showVerifyTable.value;
                 // 如果验证开关关闭，将showVerifyTable设为false
                 if (!showVerifyTable.value) {
                     showVerifyTable.value = false;
@@ -464,7 +458,13 @@
     const vm = app.mount('#app');
 
     // 暴露方法到全局
-    window.toggleVerifyTable = vm.toggleVerifyTable;
+    window.toggleVerifyTable = function() {
+        $('#waitingModal').modal('show');
+        setTimeout(function (){
+            $('#waitingModal').modal('hide')
+        },3000)
+        setTimeout(vm.toggleVerifyTable, 3000);
+    }
     window.tablesize = function() {
         $("#updatetablesize").modal(); // 打开模态窗口
 
