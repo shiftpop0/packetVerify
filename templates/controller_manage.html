@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    {%  load static %}
+    {% load static %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static '/plugins/images/favicon.png' %}">
     <title>源地址验证后台管理</title>
     <!-- Bootstrap Core CSS -->
-    <link href="{%  static '/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static '/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Menu CSS -->
     <link href="{% static '/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css' %}" rel="stylesheet">
     <!-- animation CSS -->
@@ -55,16 +55,17 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <!-- 添加控制器 -->
-            <div id = "insertcontrollermodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="insertmyLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div id="insertcontrollermodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="insertmyLargeModalLabel" aria-hidden="true" style="display: none;">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="insertmyLargeModalLabel"><span >新增控制器</span></h4> </div>
+                            <h4 class="modal-title" id="insertmyLargeModalLabel"><span>新增控制器</span></h4>
+                        </div>
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="insert_ip_address" class="control-label">设备IP地址(示例:10.1.1.1/24)</label>
-                                <input type="text" class="form-control" id="insert_ip_address" >
+                                <input type="text" class="form-control" id="insert_ip_address">
                             </div>
                             <div class="form-group">
                                 <label for="insert_device_name" class="control-label">设备名称(20字内)</label>
@@ -140,56 +141,58 @@
                     <h4 class="page-title">源地址验证控制器</h4>
                 </div>
                 <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12 tool-container">
-                    <button class="btn btn-success waves-effect waves-light " type="button" id="new_controller">
-                                    <span class="btn-label">
-                                        <i class="fa fa-plus"></i>
-                                    </span>新增控制器
+                    <button class="btn btn-success waves-effect waves-light" type="button" id="new_controller">
+                        <span class="btn-label">
+                            <i class="fa fa-plus"></i>
+                        </span>新增控制器
                     </button>
                     <button class="btn btn-info waves-effect waves-light" type="button" id="refresh_controller">
-                                <span class="btn-label">
-                                    <i class="fa fa-refresh"></i>
-                                </span> 重新加载控制器
+                        <span class="btn-label">
+                            <i class="fa fa-refresh"></i>
+                        </span>重新加载控制器
                     </button>
-                    <button class="right-side-toggle waves-effect waves-light btn-info btn-circle pull-right m-l-20"><i class="ti-settings text-white"></i></button>
-
+                    <button class="right-side-toggle waves-effect waves-light btn-info btn-circle pull-right m-l-20">
+                        <i class="ti-settings text-white"></i>
+                    </button>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             {% verbatim %}
-            <div id="app" class="row" >
-                <div id="updateControllerModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="updatemyLargeModalLabel" aria-hidden="true" style="display: none;">
+            <div id="app" class="row">
+                <div id="updateRibModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="updatemyLargeModalLabel" aria-hidden="true" style="display: none;">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 class="modal-title" id="openModalLabel"><span >开启转发路径</span></h4> </div>
+                                <h4 class="modal-title" id="openModalLabel"><span>开启转发路径</span></h4>
+                            </div>
                             <div class="modal-body">
                                 <input type="hidden" id="deviceId">
                                 <div class="form-group">
-                                     <label for="update_table_size" class="control-label">源前缀</label>
-                                    <input type="text" class="form-control" id="srcIP" :value="editInfo.srcIP" >
+                                    <label for="update_table_size" class="control-label">源前缀</label>
+                                    <input type="text" class="form-control" id="srcIP" v-model="editInfo.srcIP">
                                 </div>
                                 <div class="form-group">
-                                     <label for="update_table_size" class="control-label">目的前缀</label>
-                                    <input type="text" class="form-control" id="dstIP" :value="editInfo.dstIP">
+                                    <label for="update_table_size" class="control-label">目的前缀</label>
+                                    <input type="text" class="form-control" id="dstIP" v-model="editInfo.dstIP">
                                 </div>
                                 <div class="form-group">
-                                     <label for="update_table_size" class="control-label">下一跳</label>
-                                    <input type="text" class="form-control" id="next_hop" :value="editInfo.next_hop">
+                                    <label for="update_table_size" class="control-label">下一跳</label>
+                                    <input type="text" class="form-control" id="next_hop" v-model="editInfo.next_hop">
                                 </div>
                                 <div class="form-group">
-                                     <label for="update_table_size" class="control-label">入接口</label>
-                                    <input type="number" class="form-control" id="inInterface" min="1" max="1024" :value="editInfo.inInterface">
+                                    <label for="update_table_size" class="control-label">入接口</label>
+                                    <input type="number" class="form-control" id="inInterface" min="1" max="1024" v-model="editInfo.inInterface">
                                 </div>
                                 <div class="form-group">
-                                     <label for="update_table_size" class="control-label">出接口</label>
-                                    <input type="number" class="form-control" id="outInterface" min="1" max="1024" :value="editInfo.outInterface">
+                                    <label for="update_table_size" class="control-label">出接口</label>
+                                    <input type="number" class="form-control" id="outInterface" min="1" max="1024" v-model="editInfo.outInterface">
                                 </div>
 
-                                <button class="btn btn-success waves-effect waves-light" type="button" id="update_table_button" @click="updateInfo()">
-                                        <span class="btn-label">
-                                            <i class="fa fa-refresh fa-spin"></i>
-                                        </span>更新
+                                <button class="btn btn-success waves-effect waves-light" type="button" id="update_table_button" @click="updateInfo">
+                                    <span class="btn-label">
+                                        <i class="fa fa-refresh fa-spin"></i>
+                                    </span>更新
                                 </button>
                                 <!-- 新增的显示更新状态的元素 -->
                                 <div id="update_status_message" style="display:none; margin-top: 20px;" class="alert"></div>
@@ -203,10 +206,10 @@
                     <!-- /.modal-dialog -->
                 </div>
 
-                <div class="col-lg-12 col-sm-12 col-xs-12" v-for="(v, index) of controllers">
-                    <div class="white-box" id="divwrapper_0" style="position: relative;">
+                <div class="col-lg-12 col-sm-12 col-xs-12" v-for="(v, index) of controllers" :key="v.deviceId">
+                    <div class="white-box" :id="'divwrapper_' + index" style="position: relative;">
                         <div style="display: flex">
-                             <h3 class="box-title m-b-20" style="flex: 1">控制器ID：{{ v.deviceId }}</h3>
+                            <h3 class="box-title m-b-20" style="flex: 1">控制器ID：{{ v.deviceId }}</h3>
 
                             <div>
                                 <button class="btn btn-primary waves-effect waves-light m-r-20" id="edit_lab_0" type="button" onclick="openpath(this)"><span class="btn-label"><i class="fa fa-edit"></i></span>开启验证路径</button>
@@ -220,39 +223,42 @@
                             </div>
                             <div style="margin-top: 24px; margin-bottom: 32px; border-block-start: 1px solid rgba(5, 5, 5, 0.06)"></div>
                             <table class="table table-striped">
-                              <thead>
-                                <tr>
-                                  <th scope="col">设备ID</th>
-                                  <th scope="col">源前缀</th>
-                                  <th scope="col">目的前缀</th>
-                                  <th scope="col">下一跳</th>
-                                  <th scope="col">入接口</th>
-                                  <th scope="col">出接口</th>
-                                  <th scope="col">操作</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr v-for="v of tops">
-                                  <th scope="row">{{ v.deviceId }}</th>
-                                  <td>{{ v.srcIP }}</td>
-                                  <td>{{ v.dstIP }}</td>
-                                  <td>{{ v.next_hop }}</td>
-                                  <td>{{ v.inInterface }}</td>
-                                  <td>{{ v.outInterface }}</td>
-                                    <td>
-                                        <button class="btn btn-outline-secondary" id="edit_RIB_0" type="button" v-on:click="updatelab(index)" title="编辑路由表">      <i class="fa fa-edit"></i>    </button>
-                                        <button class="btn btn-outline-secondary" id="delete_RIB_0" type="button" onclick="verifyset(this)" title="删除路由表项">      <i class="fa fa-trash-o"></i>    </button>
-                                    </td>
-                                </tr>
-                              </tbody>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">设备ID</th>
+                                        <th scope="col">源前缀</th>
+                                        <th scope="col">目的前缀</th>
+                                        <th scope="col">下一跳</th>
+                                        <th scope="col">入接口</th>
+                                        <th scope="col">出接口</th>
+                                        <th scope="col">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(rib, ribIndex) of tops" :key="rib.deviceId">
+                                        <th scope="row">{{ rib.deviceId }}</th>
+                                        <td>{{ rib.srcIP }}</td>
+                                        <td>{{ rib.dstIP }}</td>
+                                        <td>{{ rib.next_hop }}</td>
+                                        <td>{{ rib.inInterface }}</td>
+                                        <td>{{ rib.outInterface }}</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" type="button" @click="updaterib(ribIndex)" title="编辑路由表">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary" type="button" @click="deleterib(rib.deviceId)" title="删除路由表项">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
 
-                {% endverbatim %}
+            {% endverbatim %}
 
             <div class="row" id="rowtoinsertlab">
 
@@ -301,18 +307,18 @@
 
         $("#LeftSlidebar").load("{% static '/html/LeftSlidebarAdmin.html' %}", function () {
             <!-- Menu Plugin JavaScript -->
-            $.getScript("{% static '/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js' %}",function () {
+            $.getScript("{% static '/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js' %}", function () {
                 <!-- Custom Theme JavaScript -->
                 $.getScript("{% static '/js/custom.min.js' %}");
-            });//<!-- Menu Plugin JavaScript -->
+            });<!-- Menu Plugin JavaScript -->
         });
-        $("#TopNavigation").load("/static/html/TopNavigationStudent.html" , function () {
+        $("#TopNavigation").load("/static/html/TopNavigationStudent.html", function () {
         });
     });
 </script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src=" {% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static '/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <!--slimscroll JavaScript -->
 <script src="{% static '/js/jquery.slimscroll.js' %}"></script>
 <!--Wave Effects -->
@@ -330,99 +336,191 @@
     const { createApp, ref } = Vue;
 
     createApp({
-      setup() {
-        let controllers = ref([]);
-        let tops = ref([]);
-        let editInfo = ref({})
-        return {
-          controllers,
-          tops,
-            editInfo,
-            updatelab(index) {
-                editInfo.value = tops.value[index]
-                $("#updateControllerModal").modal(); //打开模态窗口
-            },
-            updateInfo() {
-                $("#updateControllerModal").modal('hide'); //打开模态窗口
-              swal({
-                    title: "提示",
-                    text: '更新成功',
-                        type: "success",
-                    timer: 1000,
-                    showConfirmButton: false
-                })
-            }
-        };
-      },
-      mounted() {
-        var that = this;
-        // 获取设备列表
-        $.ajax({
-            type: "POST",
-            url: "/controller/showController",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({})
-        }).always(function () {
-            //隐藏加载中遮罩
-            $("#page-wrapper").busyLoad("hide");
-        }).done(function (response) {
+        setup() {
+            let controllers = ref([]);
+            let tops = ref([]);
+            let editInfo = ref({});
 
-            if (response.code === 200) {
-                if (response.data == null || response.data.length == 0) {
-                    $("#rowtoinsertlab").append(
-                        "没有控制器"
-                    )
-                    return
+            const updateInfo = async () => {
+                try {
+                    const response = await $.ajax({
+                        type: "POST",
+                        url: `/controller/update_rib?device_id=${editInfo.value.deviceId}`,
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            srcIP: editInfo.value.srcIP,
+                            dstIP: editInfo.value.dstIP,
+                            nextHop: editInfo.value.next_hop,
+                            inInterfaceId: editInfo.value.inInterface,
+                            outInterfaceId: editInfo.value.outInterface
+                        })
+                    });
+
+                    if (response.code === 200) {
+                        $("#updateRibModal").modal('hide');
+                        swal({
+                            title: "提示",
+                            text: '更新成功',
+                            type: "success",
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                        setTimeout(() => {
+                            location.reload(); // 刷新页面
+                        }, 1000); // 1秒后刷新页面
+                    } else {
+                        throw new Error(response.message);
+                    }
+                } catch (error) {
+                    swal({
+                        title: "更新失败",
+                        text: error.message,
+                        type: "error",
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
                 }
+            };
 
-                that.controllers = response.data
-            } else {
+            return {
+                controllers,
+                tops,
+                editInfo,
+                updateInfo,
+                updaterib(index) {
+                    editInfo.value = { ...tops.value[index], deviceId: tops.value[index].deviceId };
+                    $("#updateRibModal").modal();
+                },
+                deleterib(deviceId) {
+                    swal({
+                        title: "确定删除路由表项吗?",
+                        text: "删除后一切数据无法恢复!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "删除",
+                        cancelButtonText: "取消",
+                        closeOnConfirm: false
+                    }, function () {
+                        // 显示加载中遮罩
+                        $("#page-wrapper").busyLoad("show", {
+                            text: "删除中 ...",
+                            animation: "fade",
+                            background: "rgba(0, 0, 0, 0.86)",
+                            spinner: "cube-grid"
+                        });
+
+                        $.ajax({
+                            type: "POST",
+                            url: `/controller/delete_rib?device_id=${deviceId}`,
+                            dataType: "json",
+                            contentType: "application/json",
+                            data: JSON.stringify({})
+                        }).always(function () {
+                            // 隐藏加载中遮罩
+                            $("#page-wrapper").busyLoad("hide");
+                        }).done(function (response) {
+                            if (response.code === 200) {
+                                swal({
+                                    title: "删除成功",
+                                    text: response.message,
+                                    type: "success",
+                                    timer: 1000,
+                                });
+                                location.reload();
+                            } else {
+                                swal({
+                                    title: "删除失败",
+                                    text: response.message,
+                                    type: "error",
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        }).fail(function () {
+                            swal({
+                                title: "通信失败",
+                                text: "请检查网络",
+                                type: "error",
+                                showConfirmButton: true,
+                                confirmButtonText: "确定",
+                            });
+                        });
+                    });
+                }
+            };
+        },
+        mounted() {
+            var that = this;
+            // 获取设备列表
+            $.ajax({
+                type: "POST",
+                url: "/controller/showController",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({})
+            }).always(function () {
+                //隐藏加载中遮罩
+                $("#page-wrapper").busyLoad("hide");
+            }).done(function (response) {
+
+                if (response.code === 200) {
+                    if (response.data == null || response.data.length == 0) {
+                        $("#rowtoinsertlab").append(
+                            "没有控制器"
+                        );
+                        return;
+                    }
+
+                    that.controllers = response.data;
+                } else {
+                    swal({
+                        title: "获取设备节点失败",
+                        text: response.message,
+                        type: "error",
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }
+            }).fail(function () {
                 swal({
-                    title: "获取设备节点失败",
-                    text: response.message,
+                    title: "通信失败",
+                    text: "请检查网络",
                     type: "error",
-                    timer: 1000,
-                    showConfirmButton: false
-                })
-            }
-        }).fail(function () {
-            swal({
-                title: "通信失败",
-                text: "请检查网络",
-                type: "error",
-                showConfirmButton: true,
-                confirmButtonText: "确定",
-            })
-        })
-        $.ajax({
-            type: "POST",
-            url: "/controller/genTopo",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({})
-        }).done(function (response) {
-            if (response.code === 200) {
-                that.tops = response.data;
-            } else {
-                swal({
-                    title: "获取端口信息失败",
-                    text: response.message,
-                    type: "error",
-                    timer: 1000,
-                    showConfirmButton: false
+                    showConfirmButton: true,
+                    confirmButtonText: "确定",
                 });
-            }
-        }).fail(function () {
-            swal({
-                title: "通信失败",
-                text: "请检查网络",
-                type: "error",
-                showConfirmButton: true,
-                confirmButtonText: "确定",
             });
-        });
-    } }).mount('#app');
+            $.ajax({
+                type: "POST",
+                url: "/controller/genTopo",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({})
+            }).done(function (response) {
+                if (response.code === 200) {
+                    that.tops = response.data;
+                } else {
+                    swal({
+                        title: "获取端口信息失败",
+                        text: response.message,
+                        type: "error",
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+                }
+            }).fail(function () {
+                swal({
+                    title: "通信失败",
+                    text: "请检查网络",
+                    type: "error",
+                    showConfirmButton: true,
+                    confirmButtonText: "确定",
+                });
+            });
+        }
+    }).mount('#app');
 </script>
 
 <script>
@@ -512,9 +610,9 @@
     });
 
     function openpath(inparam) {
-        const deviceIds = [1,2]; // 需要开启的设备ID
+        const deviceIds = [1, 2]; // 需要开启的设备ID
         let currentIndex = 0;
-        var maskid = "divwrapper_"+1;
+        var maskid = "divwrapper_" + 1;
         swal({
             title: "确定开启验证路径吗?",
             text: "当前验证开关状态：关",
@@ -524,8 +622,8 @@
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             closeOnConfirm: false
-        }, function(){
-            $("#"+maskid).busyLoad("show", {
+        }, function () {
+            $("#" + maskid).busyLoad("show", {
                 text: "开启中 ...",
                 animation: "fade",
                 background: "rgba(0, 0, 0, 0.86)",
@@ -546,18 +644,18 @@
                             if (currentIndex < deviceIds.length) {
                                 sendRequest();
                             } else {
-                                $("#"+maskid).busyLoad("hide");
+                                $("#" + maskid).busyLoad("hide");
                                 swal({
                                     title: "开启成功",
                                     text: "验证路径已成功开启",
                                     type: "success",
                                     timer: 1500,
-                                },function () {
+                                }, function () {
                                     window.location.href = "http://127.0.0.1:8000/device_manage";
                                 });
                             }
                         } else {
-                            $("#"+maskid).busyLoad("hide");
+                            $("#" + maskid).busyLoad("hide");
                             swal({
                                 title: "开启失败",
                                 text: response.message,
@@ -567,7 +665,7 @@
                             });
                         }
                     }).fail(function () {
-                        $("#"+maskid).busyLoad("hide");
+                        $("#" + maskid).busyLoad("hide");
                         swal({
                             title: "通信失败",
                             text: "请检查网络",
@@ -584,7 +682,7 @@
 
 
     //删除控制器（留空）
-    function delController(inparam){
+    function delController(inparam) {
         swal({
             title: "确定删除控制器吗?",
             text: "删除后一切数据无法恢复!",
@@ -592,17 +690,17 @@
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "删除",
-            cancelButtonText:"取消",
+            cancelButtonText: "取消",
             closeOnConfirm: false
-        }, function(){
+        }, function () {
             //sample:delete_lab_0
-            var todeleteid = $(inparam).attr("id")
-            var arrayindex =  parseInt(todeleteid.substring(todeleteid.lastIndexOf("_")+1)) //获取到实际的index
+            var todeleteid = $(inparam).attr("id");
+            var arrayindex = parseInt(todeleteid.substring(todeleteid.lastIndexOf("_") + 1)); //获取到实际的index
             var idindatabase = externallabresponse.data[arrayindex].id;
 
-            var maskid = "divwrapper_"+arrayindex;
+            var maskid = "divwrapper_" + arrayindex;
 
-            $("#"+maskid).busyLoad("show", {
+            $("#" + maskid).busyLoad("show", {
                 text: "删除中 ...",
                 animation: "fade",
                 background: "rgba(0, 0, 0, 0.86)",
@@ -615,11 +713,11 @@
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify({
-                    id:idindatabase
+                    id: idindatabase
                 })
             }).always(function () {
                 //隐藏加载中遮罩
-                $("#"+maskid).busyLoad("hide");
+                $("#" + maskid).busyLoad("hide");
 
             }).done(function (response) {
 
@@ -629,17 +727,17 @@
                         text: response.message,
                         type: "success",
                         timer: 1000,
-                    })
-                    location.reload()
+                    });
+                    location.reload();
 
-                }else {
+                } else {
                     swal({
                         title: "删除失败",
                         text: response.message,
                         type: "error",
                         timer: 1000,
                         showConfirmButton: false
-                    })
+                    });
                 }
 
             }).fail(function () {
@@ -649,79 +747,8 @@
                     type: "error",
                     showConfirmButton: true,
                     confirmButtonText: "确定",
-                })
-            })
-        });
-    }
-
-    //删除路由表项 尚未接入接口(需先测试接口去删除根据ID把)
-    function verifyset(inparam) {
-        swal({
-            title: "确定删除路由表项吗?",
-            text: "删除后一切数据无法恢复!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "删除",
-            cancelButtonText:"取消",
-            closeOnConfirm: false
-        }, function(){
-            //sample:delete_lab_0
-            var todeleteid = $(inparam).attr("id")
-            var arrayindex =  parseInt(todeleteid.substring(todeleteid.lastIndexOf("_")+1)) //获取到实际的index
-            var idindatabase = externallabresponse.data[arrayindex].id;
-
-            var maskid = "divwrapper_"+arrayindex;
-
-            $("#"+maskid).busyLoad("show", {
-                text: "删除中 ...",
-                animation: "fade",
-                background: "rgba(0, 0, 0, 0.86)",
-                spinner: "cube-grid"
+                });
             });
-            //发送请求
-            $.ajax({
-                type: "POST",
-                url: "/lab/deleteLab.action",
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    id:idindatabase
-                })
-            }).always(function () {
-                //隐藏加载中遮罩
-                $("#"+maskid).busyLoad("hide");
-
-            }).done(function (response) {
-
-                if (undefined === response.code) {
-                    swal({
-                        title: "删除成功",
-                        text: response.message,
-                        type: "success",
-                        timer: 1000,
-                    })
-                    location.reload()
-
-                }else {
-                    swal({
-                        title: "删除失败",
-                        text: response.message,
-                        type: "error",
-                        timer: 1000,
-                        showConfirmButton: false
-                    })
-                }
-
-            }).fail(function () {
-                swal({
-                    title: "通信失败",
-                    text: "请检查网络",
-                    type: "error",
-                    showConfirmButton: true,
-                    confirmButtonText: "确定",
-                })
-            })
         });
     }
 
@@ -759,12 +786,12 @@
 
         //新增控制器节点
         $("#new_controller").click(function () {
-            $("#insert_ip_address").val("")
-            $("#insert_controller_name").val("")
-            $("#insert_controller_about").val("")
+            $("#insert_ip_address").val("");
+            $("#insert_controller_name").val("");
+            $("#insert_controller_about").val("");
 
-            $("#insertcontrollermodal").modal()
-        })
+            $("#insertcontrollermodal").modal();
+        });
 
         // 新增控制器 ---不确定先模拟(后续功能需要更换成接口)
         $("#insert_controller_button").click(function () {
@@ -792,11 +819,13 @@
                 icon: "success",
                 button: false, // 修改此处以确保显示“OK”按钮
                 timer: 2000
-            })
+            });
             $("#insertcontrollermodal").modal('hide');  // 关闭模态窗口
-        })
+        });
 
         $("#insert_RIB_button").click(function () {
+            var deviceId = $("#routingTableDeviceId").val(); // 获取 device_id
+            console.log(deviceId);
             var srcIP = $("#sourcePrefix").val();
             var dstIP = $("#destinationPrefix").val();
             var nextHop = $("#nextHop").val();
@@ -828,16 +857,50 @@
                 return false;
             }
 
-            swal({
-                title: "提交成功",
-                text: "您的设备信息已更新",
-                icon: "success",
-                button: "OK",
-                timer: 2000
+            // 发送更新请求
+            $.ajax({
+                type: "POST",
+                url: `/controller/update_rib?device_id=${deviceId}`,  // 这里使用获取到的 device_id
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    srcIP: srcIP,
+                    dstIP: dstIP,
+                    nextHop: nextHop,
+                    inInterfaceId: ingressInterface,
+                    outInterfaceId: outgressInterface
+                })
+            }).done(function (response) {
+                if (response.code === 200) {
+                    swal({
+                        title: "提交成功",
+                        text: "您的设备信息已更新",
+                        icon: "success",
+                        button: "OK",
+                        timer: 2000
+                    });
+                } else {
+                    swal({
+                        title: "提交失败",
+                        text: response.message,
+                        icon: "error",
+                        button: "OK",
+                        timer: 2000
+                    });
+                }
+            }).fail(function () {
+                swal({
+                    title: "通信错误",
+                    text: "请检查网络连接。",
+                    icon: "error",
+                    button: "OK",
+                    timer: 2000
+                });
             });
 
             $("#insertRIBmodal").modal('hide');  // 关闭模态窗口
         });
+
 
         // 显示加载中遮罩
         $("#page-wrapper").busyLoad("show", {
@@ -847,8 +910,7 @@
             spinner: "cube-grid"
         });
 
-        //发送请求
-    })
+    });
 
 </script>
 </body>

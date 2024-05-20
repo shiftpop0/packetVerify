@@ -155,30 +155,40 @@ def update_rib_entries(request):
     device_id = request.GET.get('device_id')
     if not device_id:
         return JsonResponse({'status': 'error', 'message': 'Device ID is required'}, status=400)
-    try:
-        data = json.loads(request.body)
-        for entry in data:
-            srcIP = entry.get('srcIP')
-            dstIP = entry.get('dstIP')
-            nextHop = entry.get('nextHop')
-            inInterfaceId = entry.get('inInterfaceId')
-            outInterfaceId = entry.get('outInterfaceId')
-            if not all([srcIP, dstIP, nextHop, inInterfaceId, outInterfaceId]):
-                return JsonResponse({'status': 'error', 'message': 'Missing required fields'}, status=400)
 
-            # 使用update_or_create来更新或创建记录
-            RIB_Model.objects.update_or_create(
-                deviceId_id=device_id,
-                srcIP=srcIP,
-                dstIP=dstIP,
-                defaults={
-                    'nextHop': nextHop,
-                    'inInterfaceId': inInterfaceId,
-                    'outInterfaceId': outInterfaceId
-                }
-            )
-        return JsonResponse({
-            'status': 'success',
-        })
+    try:
+        # 打印请求体用于调试
+        request_body = request.body.decode('utf-8')
+        print(f"Request body: {request_body}")
+
+        data = json.loads(request_body)
+
+        # 验证数据是否包含所有必需的字段
+        required_fields = ['srcIP', 'dstIP', 'nextHop', 'inInterfaceId', 'outInterfaceId']
+        if not all(field in data for field in required_fields):
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields'}, status=400)
+
+        srcIP = data['srcIP']
+        dstIP = data['dstIP']
+        nextHop = data['nextHop']
+        inInterfaceId = data['inInterfaceId']
+        outInterfaceId = data['outInterfaceId']
+
+        # 尝试根据 device_id 查找记录
+        rib_entry = RIB_Model.objects.filter(deviceId_id=device_id).first()
+        if not rib_entry:
+            return JsonResponse({'status': 'error', 'message': 'Record not found'}, status=404)
+
+        # 更新记录字段
+        rib_entry.srcIP = srcIP
+        rib_entry.dstIP = dstIP
+        rib_entry.nextHop = nextHop
+        rib_entry.inInterfaceId = inInterfaceId
+        rib_entry.outInterfaceId = outInterfaceId
+        rib_entry.save()
+
+        return JsonResponse({'status': 'success'})
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'}, status=400)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
