@@ -203,8 +203,9 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <!-- 提取IP地址的前三个部分，并添加0 -->
-                                            <th scope="col" width="200px">源前缀: {{ ports[0].ipAddress.split('.').slice(0, 3).join('.') + '.0' }}/{{ ports[0].mask }}</th>
+                                            <!-- 提取IP地址-->
+                                            <!-- <th scope="col" width="200px">源前缀: {{ports[0].ipAddress}}/{{ ports[0].mask }}</th> -->
+                                            <th scope="col" width="200px">源前缀: {{ modifyPorts(ports[0].ipAddress, index) }}/{{ ports[0].mask }}</th>
                                             <th scope="col">验证端口: 0</th>
                                         </tr>
                                     </thead>
@@ -351,32 +352,45 @@
                         });
                     });
                 },
-
                 modifyIpAddress(ipAddress, deviceIndex, ruleIndex) {
                     if (deviceIndex == 1) {
                         if (ruleIndex == 0) {
-                            return "10.0.11.2";
+                            return "fd02::9";
                         } else if (ruleIndex == 1) {
-                            return "10.0.3.9";
+                            return "fd11::6";
                         } else if (ruleIndex == 2) {
-                            return "192.168.0.105";
+                            return "fc00::2";
                         } else if (ruleIndex == 3) {
-                            return "10.0.22.2";
+                            return "fd21::3";
                         }
                     }
                     if (deviceIndex == 2) {
                         if (ruleIndex == 0) {
-                            return "10.0.21.3";
+                            return "fd11::2";
                         } else if (ruleIndex == 1) {
-                            return "192.168.0.106";
+                            return "fc00::3";
                         } else if (ruleIndex == 2) {
-                            return "10.0.22.3";
+                            return "fd21::2";
                         } else if (ruleIndex == 3) {
-                            return "10.0.33.3";
+                            return "fd03::9";
                         }
                     }
                     return ipAddress;
+                },
+                //验证表写死先 之前DDL的ipv4版本没问题
+                modifyPorts(ipAddress, deviceIndex) {
+                    if (deviceIndex == 0) {
+                        return "fd01::9"
+                    }
+                    if (deviceIndex == 1) {
+                        return "fd02::9"
+                    }
+                    if (deviceIndex == 2) {
+                        return "fd11::2"
+                    }
+                    return  ipAddress;
                 }
+
             };
         },
 

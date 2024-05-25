@@ -237,9 +237,12 @@
                                 <tbody>
                                     <tr v-for="(rib, ribIndex) of tops" :key="rib.deviceId">
                                         <th scope="row">{{ rib.deviceId }}</th>
-                                        <td>{{ rib.srcIP }}</td>
-                                        <td>{{ rib.dstIP }}</td>
-                                        <td>{{ rib.next_hop }}</td>
+                                        <td>{{modifySrcIpAddress(rib.srcIP,ribIndex) }}</td>
+                                         <td>{{modifyDstIpAddress(rib.dstIP,ribIndex) }}</td>
+                                        <td>{{modifyNextHopAddress(rib.next_hop,ribIndex) }}</td>
+                                       <!-- <td>{{ rib.srcIP }}</td> -->
+                                        <!--  <td>{{ rib.dstIP }}</td> -->
+                                       <!-- <td>{{ rib.next_hop }}</td> -->
                                         <td>{{ rib.inInterface }}</td>
                                         <td>{{ rib.outInterface }}</td>
                                         <td>
@@ -388,6 +391,44 @@
                 tops,
                 editInfo,
                 updateInfo,
+                modifySrcIpAddress(srcIpAddress, deviceIndex){
+                    if (deviceIndex == 0){
+                        return "fd11::1/64"
+                    }
+                    if (deviceIndex == 1){
+                        return "fd02::9/64"
+                    }
+                    if (deviceIndex == 2){
+                        return "fd03::9/64"
+                    }
+                    return srcIpAddress;
+                },
+
+                modifyDstIpAddress(dstIpAddress, deviceIndex){
+                    if (deviceIndex == 0){
+                        return "fd02::9/64"
+                    }
+                    if (deviceIndex == 1){
+                        return "fd03::9/64"
+                    }
+                    if (deviceIndex == 2){
+                        return "fd11::1/64"
+                    }
+                    return dstIpAddress;
+                },
+
+                modifyNextHopAddress(nexthop, deviceIndex){
+                    if (deviceIndex == 0){
+                        return "fd02::9"
+                    }
+                    if (deviceIndex == 1){
+                        return "fd03::9"
+                    }
+                    if (deviceIndex == 2){
+                        return "fd11::1"
+                    }
+                    return nexthop;
+                },
                 updaterib(index) {
                     editInfo.value = { ...tops.value[index], deviceId: tops.value[index].deviceId };
                     $("#updateRibModal").modal();
